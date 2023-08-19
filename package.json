@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "check": "tsc --build --pretty --verbose ",
+    "build": "yarn check && node esbuild.config.mjs production",
     "deploy": "cross-env-shell \"yarn shx --verbose cp -u main.js manifest.json versions.json \"${PROJECT_CWD}/.obsidian/plugins/${npm_package_name}\" \"",
     "lint": "eslint */**.ts",
     "lint:fix": "eslint --fix */**.ts"
@@ -13,7 +14,7 @@
   "keywords": [],
   "author": "Joel Van Eenwyk",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "@codemirror/buildhelper": "^1.0.0",
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
@@ -24,8 +25,8 @@
     "@types/jest": "^29.5.3",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.5.1",
-    "@typescript-eslint/eslint-plugin": "6.4.0",
-    "@typescript-eslint/parser": "6.4.0",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
     "@yarnpkg/sdks": "^3.0.0-rc.49",
     "builtin-modules": "3.3.0",
     "cross-env": "^7.0.3",

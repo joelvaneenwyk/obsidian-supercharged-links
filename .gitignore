@@ -10,13 +10,12 @@ package-lock.json
 .yarn/unplugged/
 .yarn/install-state.gz
 .pnp.*
-src/**/*.js
 dist/
 
 # build
+*.js
 *.js.map
 data.json
 
 # Mac OS
 .DS_Store
-main.js

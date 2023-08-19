@@ -706,7 +706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:6.4.0":
+"@typescript-eslint/eslint-plugin@npm:latest":
   version: 6.4.0
   resolution: "@typescript-eslint/eslint-plugin@npm:6.4.0"
   dependencies:
@@ -731,7 +731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:6.4.0":
+"@typescript-eslint/parser@npm:latest":
   version: 6.4.0
   resolution: "@typescript-eslint/parser@npm:6.4.0"
   dependencies:
@@ -3687,8 +3687,8 @@ __metadata:
     "@types/jest": ^29.5.3
     "@types/mocha": ^10.0.1
     "@types/node": ^20.5.1
-    "@typescript-eslint/eslint-plugin": 6.4.0
-    "@typescript-eslint/parser": 6.4.0
+    "@typescript-eslint/eslint-plugin": latest
+    "@typescript-eslint/parser": latest
     "@yarnpkg/sdks": ^3.0.0-rc.49
     builtin-modules: 3.3.0
     cross-env: ^7.0.3
