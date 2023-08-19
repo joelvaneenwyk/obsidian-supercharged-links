@@ -138,8 +138,7 @@ export class SuperchargedLinks extends Plugin {
             const container = leaves[i].view.containerEl;
             if (updateDynamic) {
                 plugin._watchContainerDynamic(viewTypeName + i, container, plugin, selector);
-            }
-            else {
+            } else {
                 plugin._watchContainer(viewTypeName + i, container, plugin, selector);
             }
         }
@@ -210,7 +209,6 @@ export class SuperchargedLinks extends Plugin {
         observer.observe(container, { subtree: true, childList: true, attributes: false });
         plugin.observers.push([observer, viewType, selector]);
     }
-
 
     onunload() {
         this.observers.forEach(([observer, type, own_class]) => {

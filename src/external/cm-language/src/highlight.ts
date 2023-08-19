@@ -83,7 +83,9 @@ export class HighlightStyle implements Highlighter {
 const highlighterFacet = Facet.define<Highlighter>();
 
 const fallbackHighlighter = Facet.define<Highlighter, readonly Highlighter[] | null>({
-    combine(values) { return values.length ? [values[0]] : null; }
+    combine(values) {
+        return values.length ? [values[0]] : null; 
+    }
 });
 
 function getHighlighters(state: EditorState): readonly Highlighter[] | null {
@@ -106,14 +108,15 @@ export function syntaxHighlighting(highlighter: Highlighter, options?: {
         if (highlighter.module) ext.push(EditorView.styleModule.of(highlighter.module));
         themeType = highlighter.themeType;
     }
-    if (options?.fallback)
+    if (options?.fallback) {
         ext.push(fallbackHighlighter.of(highlighter));
-    else if (themeType)
+    } else if (themeType) {
         ext.push(highlighterFacet.computeN([EditorView.darkTheme], state => {
             return state.facet(EditorView.darkTheme) == (themeType == "dark") ? [highlighter] : [];
         }));
-    else
+    } else {
         ext.push(highlighterFacet.of(highlighter));
+    }
     return ext;
 }
 
@@ -125,10 +128,12 @@ export function syntaxHighlighting(highlighter: Highlighter, options?: {
 export function highlightingFor(state: EditorState, tags: readonly Tag[], scope?: NodeType): string | null {
     const highlighters = getHighlighters(state);
     let result = null;
-    if (highlighters) for (const highlighter of highlighters) {
-        if (!highlighter.scope || scope && highlighter.scope(scope)) {
-            const cls = highlighter.style(tags);
-            if (cls) result = result ? result + " " + cls : cls;
+    if (highlighters) {
+        for (const highlighter of highlighters) {
+            if (!highlighter.scope || scope && highlighter.scope(scope)) {
+                const cls = highlighter.style(tags);
+                if (cls) result = result ? result + " " + cls : cls;
+            }
         }
     }
     return result;

@@ -18,8 +18,9 @@ export const indentUnit = Facet.define<string, string>({
     combine: values => {
         if (!values.length) return "  ";
         const unit = values[0];
-        if (!unit || /\S/.test(unit) || Array.from(unit).some(e => e != unit[0]))
+        if (!unit || /\S/.test(unit) || Array.from(unit).some(e => e != unit[0])) {
             throw new Error("Invalid indent unit: " + JSON.stringify(values[0]));
+        }
         return unit;
     }
 });
@@ -134,12 +135,13 @@ export class IndentContext {
         const line = this.state.doc.lineAt(pos);
         const {simulateBreak, simulateDoubleBreak} = this.options;
         if (simulateBreak != null && simulateBreak >= line.from && simulateBreak <= line.to) {
-            if (simulateDoubleBreak && simulateBreak == pos)
+            if (simulateDoubleBreak && simulateBreak == pos) {
                 return {text: "", from: pos};
-            else if (bias < 0 ? simulateBreak < pos : simulateBreak <= pos)
+            } else if (bias < 0 ? simulateBreak < pos : simulateBreak <= pos) {
                 return {text: line.text.slice(simulateBreak - line.from), from: simulateBreak};
-            else
+            } else {
                 return {text: line.text.slice(0, simulateBreak - line.from), from: line.from};
+            }
         }
         return line;
     }
@@ -221,8 +223,9 @@ function indentFrom(node: SyntaxNode | null, pos: number, base: IndentContext) {
     return null;
 }
 
-
-function topIndent() { return 0; }
+function topIndent() {
+    return 0; 
+}
 
 /// Objects of this type provide context information and helper
 /// methods to indentation functions registered on syntax nodes.
@@ -292,8 +295,9 @@ function bracketedAligned(context: TreeIndentContext) {
     for (let pos = openToken.to;;) {
         const next = tree.childAfter(pos);
         if (!next || next == last) return null;
-        if (!next.type.isSkipped)
+        if (!next.type.isSkipped) {
             return next.from < lineEnd ? openToken : null;
+        }
         pos = next.to;
     }
 }
@@ -367,8 +371,9 @@ export function indentOnInput(): Extension {
             if (indent == null) continue;
             const cur = /^\s*/.exec(line.text)![0];
             const norm = indentString(state, indent);
-            if (cur != norm)
+            if (cur != norm) {
                 changes.push({from: line.from, to: line.from + cur.length, insert: norm});
+            }
         }
         return changes.length ? [tr, {changes, sequential: true}] : tr;
     });

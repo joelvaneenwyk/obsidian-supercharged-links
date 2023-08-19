@@ -12,8 +12,7 @@ export function displayText(link: CSSLink, settings: SuperchargedLinksSettings):
             return "<b>Please choose a tag</b>";
         }
         return `<span class="data-link-icon data-link-text data-link-icon-after" data-link-tags="${link.value}">Note</span> has tag <a class="tag">#${link.value}</a>`;
-    }
-    else if (link.type === "attribute") {
+    } else if (link.type === "attribute") {
         if (settings.targetAttributes.length === 0) {
             return "<b>No attributes added to \"Target attributes\". Go to plugin settings to add them.</b>";
         }
@@ -38,19 +37,15 @@ export function updateDisplay(textArea: HTMLElement, link: CSSLink, settings: Su
         if (!link.value) {
             disabled = true;
         }
-    }
-    else if (link.type === "attribute") {
+    } else if (link.type === "attribute") {
         if (settings.targetAttributes.length === 0) {
             disabled = true;
-        }
-        else if (!link.name) {
+        } else if (!link.name) {
+            disabled = true;
+        } else if (!link.value){
             disabled = true;
         }
-        else if (!link.value){
-            disabled = true;
-        }
-    }
-    else {
+    } else {
         if (!link.value) {
             disabled = true;
         }
@@ -74,8 +69,6 @@ class CSSBuilderModal extends Modal {
         this.plugin = plugin;
         this.saveCallback = saveCallback;
     }
-
-
 
     onOpen() {
         this.titleEl.setText("Select what links to style!");
@@ -128,7 +121,6 @@ class CSSBuilderModal extends Modal {
                 });
             });
 
-
         // attribute value
         const attrValue = new Setting(this.contentEl)
             .setName("Value to match")
@@ -159,7 +151,6 @@ class CSSBuilderModal extends Modal {
                 });
             });
 
-
         // case sensitive
         const caseSensitiveTogglerContainer = new Setting(this.contentEl)
             .setName("Case sensitive matching")
@@ -183,15 +174,13 @@ class CSSBuilderModal extends Modal {
                 attrValue.descEl.setText(matchAttrPlaceholder);
                 matchingType.settingEl.show();
                 caseSensitiveTogglerContainer.settingEl.show();
-            }
-            else if (type === "tag") {
+            } else if (type === "tag") {
                 attrName.settingEl.hide();
                 attrValue.nameEl.setText(matchTagTxt);
                 attrValue.descEl.setText(matchTagPlaceholder);
                 matchingType.settingEl.hide();
                 caseSensitiveTogglerContainer.settingEl.hide();
-            }
-            else {
+            } else {
                 attrName.settingEl.hide();
                 attrValue.nameEl.setText(matchPathTxt);
                 attrValue.descEl.setText(matchPathPlaceholder);
@@ -232,7 +221,6 @@ class CSSBuilderModal extends Modal {
                 t.setValue(cssLink.selectBackground);
                 t.setTooltip("Add optional background or underline to link");
             });
-
 
         this.contentEl.createEl("h4", {text: "Result"});
         const modal = this;

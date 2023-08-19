@@ -55,7 +55,9 @@ function defaultRenderMatch(match: MatchResult) {
 }
 
 const bracketMatchingState = StateField.define<DecorationSet>({
-    create() { return Decoration.none; },
+    create() {
+        return Decoration.none; 
+    },
     update(deco, tr) {
         if (!tr.docChanged && !tr.selection) return deco;
         let decorations: Range<Decoration>[] = [];
@@ -67,8 +69,9 @@ const bracketMatchingState = StateField.define<DecorationSet>({
         || (config.afterCursor &&
             (matchBrackets(tr.state, range.head, 1, config) ||
              (range.head < tr.state.doc.length && matchBrackets(tr.state, range.head + 1, -1, config))));
-            if (match)
+            if (match) {
                 decorations = decorations.concat(config.renderMatch(match, tr.state));
+            }
         }
         return Decoration.set(decorations, true);
     },
@@ -101,12 +104,12 @@ function matchingNodes(node: NodeType, dir: -1 | 1, brackets: string): null | re
     if (byProp) return byProp;
     if (node.name.length == 1) {
         const index = brackets.indexOf(node.name);
-        if (index > -1 && index % 2 == (dir < 0 ? 1 : 0))
+        if (index > -1 && index % 2 == (dir < 0 ? 1 : 0)) {
             return [brackets[index + dir]];
+        }
     }
     return null;
 }
-
 
 /// The result returned from `matchBrackets`.
 export interface MatchResult {
@@ -135,8 +138,9 @@ export function matchBrackets(state: EditorState, pos: number, dir: -1 | 1, conf
         const matches = matchingNodes(cur.type, dir, brackets);
         if (matches && cur.from < cur.to) {
             const handle = findHandle(cur);
-            if (handle && (dir > 0 ? pos >= handle.from && pos < handle.to : pos > handle.from && pos <= handle.to))
+            if (handle && (dir > 0 ? pos >= handle.from && pos < handle.to : pos > handle.from && pos <= handle.to)) {
                 return matchMarkedBrackets(state, pos, dir, cur, handle, matches, brackets);
+            }
         }
     }
     return matchPlainBrackets(state, pos, dir, tree, node.type, maxScanDistance, brackets);
@@ -146,26 +150,28 @@ function matchMarkedBrackets(_state: EditorState, _pos: number, dir: -1 | 1, tok
     handle: SyntaxNodeRef, matching: readonly string[], brackets: string) {
     const parent = token.parent, firstToken = {from: handle.from, to: handle.to};
     let depth = 0, cursor = parent?.cursor();
-    if (cursor && (dir < 0 ? cursor.childBefore(token.from) : cursor.childAfter(token.to))) do {
-        if (dir < 0 ? cursor.to <= token.from : cursor.from >= token.to) {
-            if (depth == 0 && matching.indexOf(cursor.type.name) > -1 && cursor.from < cursor.to) {
-                const endHandle = findHandle(cursor);
-                return {start: firstToken, end: endHandle ? {from: endHandle.from, to: endHandle.to} : undefined, matched: true};
-            } else if (matchingNodes(cursor.type, dir, brackets)) {
-                depth++;
-            } else if (matchingNodes(cursor.type, -dir as -1 | 1, brackets)) {
-                if (depth == 0) {
+    if (cursor && (dir < 0 ? cursor.childBefore(token.from) : cursor.childAfter(token.to))) {
+        do {
+            if (dir < 0 ? cursor.to <= token.from : cursor.from >= token.to) {
+                if (depth == 0 && matching.indexOf(cursor.type.name) > -1 && cursor.from < cursor.to) {
                     const endHandle = findHandle(cursor);
-                    return {
-                        start: firstToken,
-                        end: endHandle && endHandle.from < endHandle.to ? {from: endHandle.from, to: endHandle.to} : undefined,
-                        matched: false
-                    };
+                    return {start: firstToken, end: endHandle ? {from: endHandle.from, to: endHandle.to} : undefined, matched: true};
+                } else if (matchingNodes(cursor.type, dir, brackets)) {
+                    depth++;
+                } else if (matchingNodes(cursor.type, -dir as -1 | 1, brackets)) {
+                    if (depth == 0) {
+                        const endHandle = findHandle(cursor);
+                        return {
+                            start: firstToken,
+                            end: endHandle && endHandle.from < endHandle.to ? {from: endHandle.from, to: endHandle.to} : undefined,
+                            matched: false
+                        };
+                    }
+                    depth--;
                 }
-                depth--;
             }
-        }
-    } while (dir < 0 ? cursor.prevSibling() : cursor.nextSibling());
+        } while (dir < 0 ? cursor.prevSibling() : cursor.nextSibling());
+    }
     return {start: firstToken, matched: false};
 }
 

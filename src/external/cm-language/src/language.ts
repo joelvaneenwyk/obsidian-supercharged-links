@@ -81,8 +81,11 @@ export class Language {
     // Kludge to define EditorState.tree as a debugging helper,
     // without the EditorState package actually knowing about
     // languages and lezer trees.
-        if (!EditorState.prototype.hasOwnProperty("tree"))
-            Object.defineProperty(EditorState.prototype, "tree", {get() { return syntaxTree(this); }});
+        if (!EditorState.prototype.hasOwnProperty("tree")) {
+            Object.defineProperty(EditorState.prototype, "tree", {get() {
+                return syntaxTree(this); 
+            }});
+        }
 
         this.parser = parser;
         this.extension = [
@@ -93,9 +96,11 @@ export class Language {
                 const base = state.facet(data), sub = top.type.prop(sublanguageProp);
                 if (sub) {
                     const innerNode = top.resolve(pos - top.from, side);
-                    for (const sublang of sub) if (sublang.test(innerNode, state)) {
-                        const data = state.facet(sublang.facet);
-                        return sublang.type == "replace" ? data : data.concat(base);
+                    for (const sublang of sub) {
+                        if (sublang.test(innerNode, state)) {
+                            const data = state.facet(sublang.facet);
+                            return sublang.type == "replace" ? data : data.concat(base);
+                        }
                     }
                 }
                 return base;
@@ -144,7 +149,9 @@ export class Language {
 
     /// Indicates whether this language allows nested languages. The
     /// default implementation returns true.
-    get allowsNesting() { return true; }
+    get allowsNesting() {
+        return true; 
+    }
 
     /// @internal
     static state: StateField<LanguageState>;
@@ -156,8 +163,9 @@ export class Language {
 function topNodeAt(state: EditorState, pos: number, side: -1 | 0 | 1) {
     let topLang = state.facet(language), tree = syntaxTree(state).topNode;
     if (!topLang || topLang.allowsNesting) {
-        for (let node: SyntaxNode | null = tree; node; node = node.enter(pos, side, IterMode.ExcludeBuffers))
+        for (let node: SyntaxNode | null = tree; node; node = node.enter(pos, side, IterMode.ExcludeBuffers)) {
             if (node.type.isTop) tree = node;
+        }
     }
     return tree;
 }
@@ -194,7 +202,9 @@ export class LRLanguage extends Language {
         return new LRLanguage(this.data, this.parser.configure(options), name || this.name);
     }
 
-    get allowsNesting() { return this.parser.hasWrappers(); }
+    get allowsNesting() {
+        return this.parser.hasWrappers(); 
+    }
 }
 
 /// Get the syntax tree for a state, which is the current (possibly
@@ -259,7 +269,9 @@ class DocInput implements Input {
         this.cursor = doc.iter();
     }
 
-    get length() { return this.doc.length; }
+    get length() {
+        return this.doc.length; 
+    }
 
     private syncTo(pos: number) {
         this.string = this.cursor.next(pos - this.cursorPos).value;
@@ -272,14 +284,17 @@ class DocInput implements Input {
         return this.string;
     }
 
-    get lineChunks() { return true; }
+    get lineChunks() {
+        return true; 
+    }
 
     read(from: number, to: number) {
         const stringStart = this.cursorPos - this.string.length;
-        if (from < stringStart || to >= this.cursorPos)
+        if (from < stringStart || to >= this.cursorPos) {
             return this.doc.sliceString(from, to);
-        else
+        } else {
             return this.string.slice(from - stringStart, to - stringStart);
+        }
     }
 }
 
@@ -375,10 +390,11 @@ export class ParseContext {
                     this.treeLen = this.parse.stoppedAt ?? this.state.doc.length;
                     this.tree = done;
                     this.parse = null;
-                    if (this.treeLen < (upto ?? this.state.doc.length))
+                    if (this.treeLen < (upto ?? this.state.doc.length)) {
                         this.parse = this.startParse();
-                    else
+                    } else {
                         return true;
+                    }
                 }
                 if (until()) return false;
             }
@@ -390,7 +406,9 @@ export class ParseContext {
         let pos, tree: Tree | undefined | null;
         if (this.parse && (pos = this.parse.parsedPos) >= this.treeLen) {
             if (this.parse.stoppedAt == null || this.parse.stoppedAt > pos) this.parse.stopAt(pos);
-            this.withContext(() => { while (!(tree = this.parse!.advance())) {} });
+            this.withContext(() => {
+                while (!(tree = this.parse!.advance())) {} 
+            });
             this.treeLen = pos;
             this.tree = tree!;
             this.fragments = this.withoutTempSkipped(TreeFragment.addTree(this.tree, this.fragments, true));
@@ -401,13 +419,17 @@ export class ParseContext {
     private withContext<T>(f: () => T): T {
         const prev = currentContext;
         currentContext = this;
-        try { return f(); }
-        finally { currentContext = prev; }
+        try {
+            return f(); 
+        } finally {
+            currentContext = prev; 
+        }
     }
 
     private withoutTempSkipped(fragments: readonly TreeFragment[]) {
-        for (let r; r = this.tempSkipped.pop();)
+        for (let r; r = this.tempSkipped.pop();) {
             fragments = cutFragments(fragments, r.from, r.to);
+        }
         return fragments;
     }
 
@@ -508,7 +530,9 @@ export class ParseContext {
 
     /// Get the context for the current parse, or `null` if no editor
     /// parse is in progress.
-    static get() { return currentContext; }
+    static get() {
+        return currentContext; 
+    }
 }
 
 function cutFragments(fragments: readonly TreeFragment[], from: number, to: number) {
@@ -562,12 +586,14 @@ let requestIdle = (callback: (deadline?: IdleDeadline) => void) => {
     return () => clearTimeout(timeout);
 };
 
-if (typeof requestIdleCallback != "undefined") requestIdle = (callback: (deadline?: IdleDeadline) => void) => {
-    let idle = -1, timeout = setTimeout(() => {
-        idle = requestIdleCallback(callback, {timeout: Work.MaxPause - Work.MinPause});
-    }, Work.MinPause);
-    return () => idle < 0 ? clearTimeout(timeout) : cancelIdleCallback(idle);
-};
+if (typeof requestIdleCallback != "undefined") {
+    requestIdle = (callback: (deadline?: IdleDeadline) => void) => {
+        let idle = -1, timeout = setTimeout(() => {
+            idle = requestIdleCallback(callback, {timeout: Work.MaxPause - Work.MinPause});
+        }, Work.MinPause);
+        return () => idle < 0 ? clearTimeout(timeout) : cancelIdleCallback(idle);
+    };
+}
 
 const isInputPending = typeof navigator != "undefined" && (navigator as any).scheduling?.isInputPending
     ? () => (navigator as any).scheduling.isInputPending() : null;
@@ -587,8 +613,9 @@ const parseWorker = ViewPlugin.fromClass(class ParseWorker {
 
     update(update: ViewUpdate) {
         const cx = this.view.state.field(Language.state).context;
-        if (cx.updateViewport(update.view.viewport) || this.view.viewport.to > cx.treeLen)
+        if (cx.updateViewport(update.view.viewport) || this.view.viewport.to > cx.treeLen) {
             this.scheduleWork();
+        }
         if (update.docChanged) {
             if (this.view.hasFocus) this.chunkBudget += Work.ChangeBonus;
             this.scheduleWork();
@@ -599,8 +626,9 @@ const parseWorker = ViewPlugin.fromClass(class ParseWorker {
     scheduleWork() {
         if (this.working) return;
         const {state} = this.view, field = state.field(Language.state);
-        if (field.tree != field.context.tree || !field.context.isDone(state.doc.length))
+        if (field.tree != field.context.tree || !field.context.isDone(state.doc.length)) {
             this.working = requestIdle(this.work);
+        }
     }
 
     work(deadline?: IdleDeadline) {
@@ -649,7 +677,9 @@ const parseWorker = ViewPlugin.fromClass(class ParseWorker {
         return !!(this.working || this.workScheduled > 0);
     }
 }, {
-    eventHandlers: {focus() { this.scheduleWork(); }}
+    eventHandlers: {focus() {
+        this.scheduleWork(); 
+    }}
 });
 
 /// The facet used to associate a language with an editor state. Used
@@ -657,7 +687,9 @@ const parseWorker = ViewPlugin.fromClass(class ParseWorker {
 /// manually wrap your languages in this). Can be used to access the
 /// current language on a state.
 export const language = Facet.define<Language, Language | null>({
-    combine(languages) { return languages.length ? languages[0] : null; },
+    combine(languages) {
+        return languages.length ? languages[0] : null; 
+    },
     enables: language => [
         Language.state,
         parseWorker,
@@ -721,7 +753,9 @@ export class LanguageDescription {
     load(): Promise<LanguageSupport> {
         return this.loading || (this.loading = this.loadFunc().then(
             support => this.support = support,
-            err => { this.loading = null; throw err; }
+            err => {
+                this.loading = null; throw err; 
+            }
         ));
     }
 
@@ -771,10 +805,15 @@ export class LanguageDescription {
     static matchLanguageName(descs: readonly LanguageDescription[], name: string, fuzzy = true) {
         name = name.toLowerCase();
         for (const d of descs) if (d.alias.some(a => a == name)) return d;
-        if (fuzzy) for (const d of descs) for (const a of d.alias) {
-            const found = name.indexOf(a);
-            if (found > -1 && (a.length > 2 || !/\w/.test(name[found - 1]) && !/\w/.test(name[found + a.length])))
-                return d;
+        if (fuzzy) {
+            for (const d of descs) {
+                for (const a of d.alias) {
+                    const found = name.indexOf(a);
+                    if (found > -1 && (a.length > 2 || !/\w/.test(name[found - 1]) && !/\w/.test(name[found + a.length]))) {
+                        return d;
+                    }
+                }
+            }
         }
         return null;
     }

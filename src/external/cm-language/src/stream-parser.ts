@@ -93,7 +93,9 @@ export class StreamLanguage<State> extends Language {
     }
 
     /// Define a stream language.
-    static define<State>(spec: StreamParser<State>) { return new StreamLanguage(spec); }
+    static define<State>(spec: StreamParser<State>) {
+        return new StreamLanguage(spec); 
+    }
 
     private getIndent(cx: IndentContext, pos: number) {
         let tree = syntaxTree(cx.state), at: SyntaxNode | null = tree.resolve(pos);
@@ -106,8 +108,11 @@ export class StreamLanguage<State> extends Language {
             if (from != null && from < pos - 1e4) from = undefined;
         }
         let start = findState(this, tree, 0, at.from, from ?? pos), statePos: number, state;
-        if (start) { state = start.state; statePos = start.pos + 1; }
-        else { state = this.streamParser.startState(cx.unit) ; statePos = 0; }
+        if (start) {
+            state = start.state; statePos = start.pos + 1; 
+        } else {
+            state = this.streamParser.startState(cx.unit) ; statePos = 0; 
+        }
         if (pos - statePos > C.MaxIndentScanDist) return null;
         while (statePos < pos) {
             const line = cx.state.doc.lineAt(statePos), end = Math.min(pos, line.to);
@@ -115,8 +120,9 @@ export class StreamLanguage<State> extends Language {
                 const indentation = overrideIndentation ? overrideIndentation(line.from) : -1;
                 const lookahead = (n: number) => n + line.number > cx.state.doc.lines ? "" : cx.state.doc.line(n + line.number).text;
                 const stream = new StringStream(line.text, cx.state.tabSize, cx.unit, lookahead, indentation < 0 ? undefined : indentation);
-                while (stream.pos < end - line.from)
+                while (stream.pos < end - line.from) {
                     readToken(this.streamParser.token, stream, state);
+                }
             } else {
                 this.streamParser.blankLine(state, cx.unit);
             }
@@ -132,7 +138,9 @@ export class StreamLanguage<State> extends Language {
         return result;
     }
 
-    get allowsNesting() { return false; }
+    get allowsNesting() {
+        return false; 
+    }
 }
 
 function findState<State>(
@@ -167,8 +175,9 @@ function findStartInFragments<State>(lang: StreamLanguage<State>, fragments: rea
     for (const f of fragments) {
         const from = f.from + (f.openStart ? 25 : 0), to = f.to - (f.openEnd ? 25 : 0);
         let found = from <= startPos && to > startPos && findState(lang, f.tree, 0 - f.offset, startPos, to), tree;
-        if (found && (tree = cutTree(lang, f.tree, startPos + f.offset, found.pos + f.offset, false)))
+        if (found && (tree = cutTree(lang, f.tree, startPos + f.offset, found.pos + f.offset, false))) {
             return {state: found.state, tree};
+        }
     }
     return {state: lang.streamParser.startState(editorState ? getIndentUnit(editorState) : 4), tree: Tree.empty};
 }
@@ -324,8 +333,7 @@ class Parse<State> implements PartialParse {
                     if (cached) {
                         cls = cached[0];
                         linecls = cached[1];
-                    }
-                    else {
+                    } else {
                         let tokens = token.split(" ");
                         tokens = tokens.filter(t => {
                             if (!t) return false;

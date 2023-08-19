@@ -99,28 +99,35 @@ export const foldState = StateField.define<DecorationSet>({
     update(folded, tr) {
         folded = folded.map(tr.changes);
         for (const e of tr.effects) {
-            if (e.is(foldEffect) && !foldExists(folded, e.value.from, e.value.to))
+            if (e.is(foldEffect) && !foldExists(folded, e.value.from, e.value.to)) {
                 folded = folded.update({add: [foldWidget.range(e.value.from, e.value.to)]});
-            else if (e.is(unfoldEffect))
+            } else if (e.is(unfoldEffect)) {
                 folded = folded.update({filter: (from, to) => e.value.from != from || e.value.to != to,
                     filterFrom: e.value.from, filterTo: e.value.to});
+            }
         }
         // Clear folded ranges that cover the selection head
         if (tr.selection) {
             let onSelection = false, {head} = tr.selection.main;
-            folded.between(head, head, (a, b) => { if (a < head && b > head) onSelection = true; });
-            if (onSelection) folded = folded.update({
-                filterFrom: head,
-                filterTo: head,
-                filter: (a, b) => b <= head || a >= head
+            folded.between(head, head, (a, b) => {
+                if (a < head && b > head) onSelection = true; 
             });
+            if (onSelection) {
+                folded = folded.update({
+                    filterFrom: head,
+                    filterTo: head,
+                    filter: (a, b) => b <= head || a >= head
+                });
+            }
         }
         return folded;
     },
     provide: f => EditorView.decorations.from(f),
     toJSON(folded, state) {
         const ranges: number[] = [];
-        folded.between(0, state.doc.length, (from, to) => {ranges.push(from, to);});
+        folded.between(0, state.doc.length, (from, to) => {
+            ranges.push(from, to);
+        });
         return ranges;
     },
     fromJSON(value) {
@@ -151,7 +158,9 @@ function findFold(state: EditorState, from: number, to: number) {
 
 function foldExists(folded: DecorationSet, from: number, to: number) {
     let found = false;
-    folded.between(from, from, (a, b) => { if (a == from && b == to) found = true; });
+    folded.between(from, from, (a, b) => {
+        if (a == from && b == to) found = true; 
+    });
     return found;
 }
 
@@ -212,7 +221,9 @@ export const unfoldAll: Command = view => {
     const field = view.state.field(foldState, false);
     if (!field || !field.size) return false;
     const effects: StateEffect<any>[] = [];
-    field.between(0, view.state.doc.length, (from, to) => { effects.push(unfoldEffect.of({from, to})); });
+    field.between(0, view.state.doc.length, (from, to) => {
+        effects.push(unfoldEffect.of({from, to})); 
+    });
     view.dispatch({effects});
     return true;
 };
@@ -281,7 +292,9 @@ const defaultConfig: Required<FoldConfig> = {
 };
 
 const foldConfig = Facet.define<FoldConfig, Required<FoldConfig>>({
-    combine(values) { return combineConfig(values, defaultConfig); }
+    combine(values) {
+        return combineConfig(values, defaultConfig); 
+    }
 });
 
 /// Create an extension that configures code folding.
@@ -341,9 +354,13 @@ const foldGutterDefaults: Required<FoldGutterConfig> = {
 
 class FoldMarker extends GutterMarker {
     constructor(readonly config: Required<FoldGutterConfig>,
-              readonly open: boolean) { super(); }
+              readonly open: boolean) {
+        super(); 
+    }
 
-    eq(other: FoldMarker) { return this.config == other.config && this.open == other.open; }
+    eq(other: FoldMarker) {
+        return this.config == other.config && this.open == other.open; 
+    }
 
     toDOM(view: EditorView) {
         if (this.config.markerDOM) return this.config.markerDOM(this.open);
@@ -376,8 +393,9 @@ export function foldGutter(config: FoldGutterConfig = {}): Extension {
           update.startState.facet(language) != update.state.facet(language) ||
           update.startState.field(foldState, false) != update.state.field(foldState, false) ||
           syntaxTree(update.startState) != syntaxTree(update.state) ||
-          fullConfig.foldingChanged(update))
+          fullConfig.foldingChanged(update)) {
                 this.markers = this.buildMarkers(update.view);
+            }
         }
 
         buildMarkers(view: EditorView) {
@@ -397,7 +415,9 @@ export function foldGutter(config: FoldGutterConfig = {}): Extension {
         markers,
         gutter({
             class: "cm-foldGutter",
-            markers(view) { return view.plugin(markers)?.markers || RangeSet.empty; },
+            markers(view) {
+                return view.plugin(markers)?.markers || RangeSet.empty; 
+            },
             initialSpacer() {
                 return new FoldMarker(fullConfig, false);
             },

@@ -10,7 +10,6 @@ export function clearExtraAttributes(link: HTMLElement) {
     });
 }
 
-
 export function fetchTargetAttributesSync(app: App, settings: SuperchargedLinksSettings, dest: TFile, addDataHref: boolean): Record<string, string> {
     const new_props: Record<string, string> = { tags: "" };
     const cache = app.metadataCache.getFileCache(dest);
@@ -54,13 +53,13 @@ export function fetchTargetAttributesSync(app: App, settings: SuperchargedLinksS
         const api = app.plugins.plugins.dataview?.api;
         if (api) {
             getResults(api);
-        }
-        else
+        } else {
             this.plugin.registerEvent(
                 this.app.metadataCache.on("dataview:api-ready", (api: any) =>
                     getResults(api)
                 )
             );
+        }
     }
 
     return new_props;
@@ -122,7 +121,6 @@ export function updateDivExtraAttributes(app: App, settings: SuperchargedLinksSe
     }
 }
 
-
 export function updateElLinks(app: App, plugin: SuperchargedLinks, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
     const settings = plugin.settings;
     const links = el.querySelectorAll("a.internal-link");
@@ -131,7 +129,6 @@ export function updateElLinks(app: App, plugin: SuperchargedLinks, el: HTMLEleme
         updateLinkExtraAttributes(app, settings, link, destName);
     });
 }
-
 
 export function updatePropertiesPane(propertiesEl: HTMLElement, file: TFile, app: App, plugin: SuperchargedLinks) {
     const frontmatter = app.metadataCache.getCache(file.path)?.frontmatter;
@@ -187,7 +184,6 @@ export function updatePropertiesPane(propertiesEl: HTMLElement, file: TFile, app
     }
 }
 
-
 export function updateVisibleLinks(app: App, plugin: SuperchargedLinks) {
     const settings = plugin.settings;
     app.workspace.iterateRootLeaves((leaf) => {
@@ -206,8 +202,7 @@ export function updateVisibleLinks(app: App, plugin: SuperchargedLinks) {
             if (settings.enableTabHeader) {
                 // Supercharge tab headers
                 updateDivExtraAttributes(app, settings, tabHeader, "", file.path);
-            }
-            else {
+            } else {
                 clearExtraAttributes(tabHeader);
             }
 

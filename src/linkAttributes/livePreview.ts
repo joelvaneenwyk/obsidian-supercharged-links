@@ -25,8 +25,7 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
             headerEl.setAttrs(this.attributes);
             if (this.after) {
                 headerEl.addClass("data-link-icon-after");
-            }
-            else {
+            } else {
                 headerEl.addClass("data-link-icon");
             }
             // create a naive bread crumb
@@ -108,8 +107,7 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
                                     if (isMDUrl && !file) {
                                         try {
                                             file = app.vault.getAbstractFileByPath(decodeURIComponent(linkText)) as TFile;
-                                        }
-                                        catch (e) {
+                                        } catch (e) {
                                             // Just ignore the exception...
                                         }
                                     }
@@ -145,8 +143,7 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
                                                 mdAliasFrom = null;
                                                 mdAliasTo = null;
                                             }
-                                        }
-                                        else {
+                                        } else {
                                             builder.add(node.from, node.from, iconDecoBefore);
                                         }
 

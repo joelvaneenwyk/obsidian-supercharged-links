@@ -1,7 +1,6 @@
 import {CSSLink, matchSign} from "./cssLink";
 import {SuperchargedLinks} from "plugin/index";
 
-
 const colorSet = [[
     "#0089BA",
     "#2C73D2",
@@ -71,7 +70,6 @@ export async function buildCSS(selectors: CSSLink[], plugin: SuperchargedLinks) 
         ":root {"
     ];
 
-
     selectors.forEach((selector, i) => {
         if (selector.selectText) {
             instructions.push(`    --${selector.uid}-color: ${colors[hash(selector.uid) % 36]};`);
@@ -94,11 +92,9 @@ export async function buildCSS(selectors: CSSLink[], plugin: SuperchargedLinks) 
         let cssSelector: string;
         if (selector.type === "attribute") {
             cssSelector = `[data-link-${selector.name}${matchSign[selector.match]}="${selector.value}" ${selector.matchCaseSensitive ?"" : " i"}]`;
-        }
-        else if (selector.type === "tag") {
+        } else if (selector.type === "tag") {
             cssSelector = `[data-link-tags*="${selector.value}" i]`;
-        }
-        else {
+        } else {
             cssSelector = `[data-link-path${matchSign[selector.match]}="${selector.value}" ${selector.matchCaseSensitive ?"" : "i"}]`;
         }
 
@@ -151,8 +147,7 @@ export async function buildCSS(selectors: CSSLink[], plugin: SuperchargedLinks) 
         if (selector.type === "tag") {
             name = "tag";
             // value = "\#" + value;
-        }
-        else if (selector.type === "path"){
+        } else if (selector.type === "path"){
             name = "path";
         }
         instructions.push(...[

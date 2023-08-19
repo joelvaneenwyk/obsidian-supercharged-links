@@ -51,7 +51,6 @@ Styling can be done using the Style Settings plugin.
         const selectorDiv = containerEl.createDiv();
         this.drawSelectors(selectorDiv);
 
-
         containerEl.createEl("h4", { text: "Settings" });
         new Setting(containerEl)
             .setName("Enable in Editor")

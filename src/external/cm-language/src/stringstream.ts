@@ -35,19 +35,26 @@ export class StringStream {
     ) {}
 
     /// True if we are at the end of the line.
-    eol(): boolean {return this.pos >= this.string.length;}
+    eol(): boolean {
+        return this.pos >= this.string.length;
+    }
 
     /// True if we are at the start of the line.
-    sol(): boolean {return this.pos == 0;}
+    sol(): boolean {
+        return this.pos == 0;
+    }
 
     /// Get the next code unit after the current position, or undefined
     /// if we're at the end of the line.
-    peek() {return this.string.charAt(this.pos) || undefined;}
+    peek() {
+        return this.string.charAt(this.pos) || undefined;
+    }
 
     /// Read the next code unit and advance `this.pos`.
     next(): string | void {
-        if (this.pos < this.string.length)
+        if (this.pos < this.string.length) {
             return this.string.charAt(this.pos++);
+        }
     }
 
     /// Match the next character against the given string, regular
@@ -57,7 +64,9 @@ export class StringStream {
         let ok;
         if (typeof match == "string") ok = ch == match;
         else ok = ch && (match instanceof RegExp ? match.test(ch) : match(ch));
-        if (ok) {++this.pos; return ch;}
+        if (ok) {
+            ++this.pos; return ch;
+        }
     }
 
     /// Continue matching characters that match the given string,
@@ -78,17 +87,23 @@ export class StringStream {
     }
 
     /// Move to the end of the line.
-    skipToEnd() {this.pos = this.string.length;}
+    skipToEnd() {
+        this.pos = this.string.length;
+    }
 
     /// Move to directly before the given character, if found on the
     /// current line.
     skipTo(ch: string): boolean | void {
         const found = this.string.indexOf(ch, this.pos);
-        if (found > -1) {this.pos = found; return true;}
+        if (found > -1) {
+            this.pos = found; return true;
+        }
     }
 
     /// Move back `n` characters.
-    backUp(n: number) {this.pos -= n;}
+    backUp(n: number) {
+        this.pos -= n;
+    }
 
     /// Get the column position at `this.pos`.
     column() {
@@ -130,5 +145,7 @@ export class StringStream {
     }
 
     /// Get the current token.
-    current(){return this.string.slice(this.start, this.pos);}
+    current(){
+        return this.string.slice(this.start, this.pos);
+    }
 }
