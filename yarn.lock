@@ -63,7 +63,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@git+https://github.com/lishid/cm-language.git, @codemirror/language@https://github.com/lishid/cm-language":
+"@codemirror/language@git+https://github.com/lishid/cm-language.git":
   version: 6.6.0
   resolution: "@codemirror/language@https://github.com/lishid/cm-language.git#commit=1aadcc247f20ccfda76424a9f853dbb4ee203fdc"
   dependencies:
@@ -3678,7 +3678,6 @@ __metadata:
   resolution: "mycoshiro-supercharged-links@workspace:."
   dependencies:
     "@codemirror/buildhelper": ^1.0.0
-    "@codemirror/language": "https://github.com/lishid/cm-language"
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
     "@lezer/common": ^1.0.0

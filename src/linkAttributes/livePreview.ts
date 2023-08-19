@@ -2,7 +2,8 @@ import { App, editorViewField, MarkdownView, TFile } from "obsidian";
 import { SuperchargedLinksSettings } from "settings/SuperchargedLinksSettings";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { RangeSetBuilder } from "@codemirror/state";
-import { tokenClassNodeProp, Tree } from "@codemirror/language";
+import { Tree } from "@lezer/common"
+import { tokenClassNodeProp } from "cm-language/index";
 import { fetchTargetAttributesSync } from "./linkAttributes";
 
 export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings) {

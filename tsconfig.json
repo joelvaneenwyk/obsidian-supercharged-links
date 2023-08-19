@@ -23,6 +23,9 @@
       ],
       "settings/*": [
         "./src/settings/*"
+      ],
+      "cm-language/*": [
+        "./src/external/cm-language/src/*"
       ]
     },
     "typeRoots": [
@@ -39,7 +42,11 @@
   "include": [
     "typings/*.d.ts",
     "src/main.ts",
-    "src/**/*.ts"
+    "src/cssBuilder/*.ts",
+    "src/linkAttributes/*.ts",
+    "src/plugin/*.ts",
+    "src/settings/*.ts",
+    "src/external/cm-language/src/*.ts"
   ],
   "exclude": [
     "**/*.js"
