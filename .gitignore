@@ -6,10 +6,16 @@
 node_modules
 package-lock.json
 
+.yarn/cache/
+.yarn/unplugged/
+.yarn/install-state.gz
+.pnp.*
+dist/
+
 # build
+*.js
 *.js.map
 data.json
 
 # Mac OS
 .DS_Store
-main.js

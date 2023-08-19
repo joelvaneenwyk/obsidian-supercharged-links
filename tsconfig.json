@@ -1,22 +1,56 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "inlineSourceMap": true,
-    "inlineSources": true,
+    "outDir": "./dist",
     "module": "ESNext",
-    "target": "es6",
-    "allowJs": true,
-    "noImplicitAny": true,
+    "target": "ES2017",
     "moduleResolution": "node",
     "importHelpers": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "allowJs": false,
+    "paths": {
+      "cssBuilder/*": [
+        "./src/cssBuilder/*"
+      ],
+      "linkAttributes/*": [
+        "./src/linkAttributes/*"
+      ],
+      "plugin/*": [
+        "./src/plugin/*"
+      ],
+      "settings/*": [
+        "./src/settings/*"
+      ],
+      "cm-language/*": [
+        "./src/external/cm-language/src/*"
+      ]
+    },
+    "typeRoots": [
+      "typings"
+    ],
     "lib": [
       "dom",
       "es5",
       "scripthost",
+      "es2018",
+      "DOM.Iterable",
+      "es6",
       "es2020"
     ]
   },
   "include": [
-    "**/*.ts"
+    "typings/*.d.ts",
+    "src/main.ts",
+    "src/cssBuilder/*.ts",
+    "src/linkAttributes/*.ts",
+    "src/plugin/*.ts",
+    "src/settings/*.ts",
+    "src/external/cm-language/src/*.ts"
+  ],
+  "exclude": [
+    "**/*.js",
+    ".yarn/**/*"
   ]
 }

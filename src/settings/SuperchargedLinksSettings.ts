@@ -1,4 +1,4 @@
-import { CSSLink } from "../cssBuilder/cssLink";
+import { CSSLink } from "cssBuilder/cssLink";
 
 export interface SuperchargedLinksSettings {
 	targetAttributes: Array<string>;
@@ -15,15 +15,15 @@ export interface SuperchargedLinksSettings {
 }
 
 export const DEFAULT_SETTINGS: SuperchargedLinksSettings = {
-	targetAttributes: [],
-	targetTags: true,
-	getFromInlineField: true,
-	enableTabHeader: true,
-	activateSnippet: true,
-	enableEditor: true,
-	enableFileList: true,
-	enableBacklinks: true,
-	enableQuickSwitcher: true,
-	enableSuggestor: true,
-	selectors: []
-}
+    targetAttributes: [],
+    targetTags: true,
+    getFromInlineField: true,
+    enableTabHeader: true,
+    activateSnippet: true,
+    enableEditor: true,
+    enableFileList: true,
+    enableBacklinks: true,
+    enableQuickSwitcher: true,
+    enableSuggestor: true,
+    selectors: []
+};

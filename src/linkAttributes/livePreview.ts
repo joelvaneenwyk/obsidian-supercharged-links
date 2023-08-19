@@ -1,34 +1,33 @@
-import {App, editorViewField, MarkdownView, TFile} from "obsidian";
-import {SuperchargedLinksSettings} from "../settings/SuperchargedLinksSettings";
-import {Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType} from "@codemirror/view";
-import {RangeSetBuilder} from "@codemirror/state";
-import {syntaxTree} from "@codemirror/language";
-import {tokenClassNodeProp} from "@codemirror/language";
-import {fetchTargetAttributesSync} from "./linkAttributes";
+import { App, editorViewField, MarkdownView, TFile } from "obsidian";
+import { SuperchargedLinksSettings } from "settings/SuperchargedLinksSettings";
+import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
+import { RangeSetBuilder } from "@codemirror/state";
+import { Tree } from "@lezer/common";
+import { tokenClassNodeProp } from "cm-language/index";
+import { fetchTargetAttributesSync } from "./linkAttributes";
 
-export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings)
-{
+export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings) {
     // Implements the live preview supercharging
     // Code structure based on https://github.com/nothingislost/obsidian-cm6-attributes/blob/743d71b0aa616407149a0b6ea5ffea28e2154158/src/main.ts
     // Code help credits to @NothingIsLost! They have been a great help getting this to work properly.
     class HeaderWidget extends WidgetType {
-        attributes: Record<string, string>
-        after: boolean
+        attributes: Record<string, string>;
+        after: boolean;
 
         constructor(attributes: Record<string, string>, after: boolean) {
             super();
-            this.attributes = attributes
-            this.after = after
+            this.attributes = attributes;
+            this.after = after;
         }
 
         toDOM() {
-            let headerEl = document.createElement("span");
+            const headerEl = document.createElement("span");
             headerEl.setAttrs(this.attributes);
             if (this.after) {
-                headerEl.addClass('data-link-icon-after');
+                headerEl.addClass("data-link-icon-after");
             }
             else {
-                headerEl.addClass('data-link-icon')
+                headerEl.addClass("data-link-icon");
             }
             // create a naive bread crumb
             return headerEl;
@@ -58,7 +57,7 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
             }
 
             buildDecorations(view: EditorView) {
-                let builder = new RangeSetBuilder<Decoration>();
+                const builder = new RangeSetBuilder<Decoration>();
                 if (!settings.enableEditor) {
                     return builder.finish();
                 }
@@ -69,13 +68,12 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
 
                 let mdAliasFrom: number = null;
                 let mdAliasTo: number = null;
-                for (let {from, to} of view.visibleRanges) {
-                    syntaxTree(view.state).iterate({
+                for (const { from, to } of view.visibleRanges) {
+                    // @ts-ignore
+                    Tree(view.state).iterate({
                         from,
                         to,
                         enter: (node) => {
-
-
                             const tokenProps = node.type.prop(tokenClassNodeProp);
                             if (tokenProps) {
                                 const props = new Set(tokenProps.split(" "));
@@ -84,10 +82,10 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
                                 const isPipe = props.has("link-alias-pipe");
 
                                 // The 'alias' of the md link
-                                const isMDLink = props.has('link');
+                                const isMDLink = props.has("link");
                                 // The 'internal link' of the md link
-                                const isMDUrl = props.has('url');
-                                const isMDFormatting = props.has('formatting-link');
+                                const isMDUrl = props.has("url");
+                                const isMDFormatting = props.has("formatting-link");
 
                                 if (isMDLink && !isMDFormatting) {
                                     // Link: The 'alias'
@@ -111,19 +109,21 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
                                         try {
                                             file = app.vault.getAbstractFileByPath(decodeURIComponent(linkText)) as TFile;
                                         }
-                                        catch(e) {}
+                                        catch (e) {
+                                            // Just ignore the exception...
+                                        }
                                     }
                                     if (file) {
-                                        let _attributes = fetchTargetAttributesSync(app, settings, file, true);
-                                        let attributes: Record<string, string> = {};
-                                        for (let key in _attributes) {
+                                        const _attributes = fetchTargetAttributesSync(app, settings, file, true);
+                                        const attributes: Record<string, string> = {};
+                                        for (const key in _attributes) {
                                             attributes["data-link-" + key] = _attributes[key];
                                         }
-                                        let deco = Decoration.mark({
+                                        const deco = Decoration.mark({
                                             attributes,
                                             class: "data-link-text"
                                         });
-                                        let iconDecoBefore = Decoration.widget({
+                                        const iconDecoBefore = Decoration.widget({
                                             widget: new HeaderWidget(attributes, false),
                                         });
                                         iconDecoAfter = Decoration.widget({
@@ -132,7 +132,7 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
 
                                         if (isMDUrl) {
                                             // Apply retroactively to the alias found before
-                                            let deco = Decoration.mark({
+                                            const deco = Decoration.mark({
                                                 attributes: attributes,
                                                 class: "data-link-text"
                                             });
@@ -155,7 +155,7 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
                                         iconDecoAfterWhere = node.to;
                                     }
                                 } else if (isLink && isAlias) {
-                                    let deco = Decoration.mark({
+                                    const deco = Decoration.mark({
                                         attributes: lastAttributes,
                                         class: "data-link-text"
                                     });
@@ -168,7 +168,7 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
                                 }
                             }
                         }
-                    })
+                    });
 
                 }
                 return builder.finish();

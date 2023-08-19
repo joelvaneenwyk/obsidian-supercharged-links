@@ -1,43 +1,43 @@
-import { App, getAllTags, getLinkpath, LinkCache, MarkdownPostProcessorContext, MarkdownView, TFile } from "obsidian"
-import { SuperchargedLinksSettings } from "src/settings/SuperchargedLinksSettings"
-import SuperchargedLinks from "../../main";
+import { App, getAllTags, getLinkpath, LinkCache, MarkdownPostProcessorContext, MarkdownView, TFile } from "obsidian";
+import { SuperchargedLinksSettings } from "settings/SuperchargedLinksSettings";
+import { SuperchargedLinks } from "plugin/index";
 
 export function clearExtraAttributes(link: HTMLElement) {
     Object.values(link.attributes).forEach(attr => {
         if (attr.name.includes("data-link")) {
-            link.removeAttribute(attr.name)
+            link.removeAttribute(attr.name);
         }
-    })
+    });
 }
 
 
 export function fetchTargetAttributesSync(app: App, settings: SuperchargedLinksSettings, dest: TFile, addDataHref: boolean): Record<string, string> {
-    let new_props: Record<string, string> = { tags: "" }
-    const cache = app.metadataCache.getFileCache(dest)
+    const new_props: Record<string, string> = { tags: "" };
+    const cache = app.metadataCache.getFileCache(dest);
     if (!cache) return new_props;
 
-    const frontmatter = cache.frontmatter
+    const frontmatter = cache.frontmatter;
 
     if (frontmatter) {
         settings.targetAttributes.forEach(attribute => {
             if (Object.keys(frontmatter).includes(attribute)) {
-                if (attribute === 'tag' || attribute === 'tags') {
-                    new_props['tags'] += frontmatter[attribute];
+                if (attribute === "tag" || attribute === "tags") {
+                    new_props["tags"] += frontmatter[attribute];
                 } else {
-                    new_props[attribute] = frontmatter[attribute]
+                    new_props[attribute] = frontmatter[attribute];
                 }
             }
-        })
+        });
     }
 
     if (settings.targetTags) {
-        new_props["tags"] += getAllTags(cache).join(' ');
+        new_props["tags"] += getAllTags(cache).join(" ");
     }
 
     if (addDataHref) {
-        new_props['data-href'] = dest.basename;
+        new_props["data-href"] = dest.basename;
     }
-    new_props['path'] = dest.path;
+    new_props["path"] = dest.path;
     //@ts-ignore
     const getResults = (api) => {
         const page = api.page(dest.path);
@@ -47,13 +47,13 @@ export function fetchTargetAttributesSync(app: App, settings: SuperchargedLinksS
         settings.targetAttributes.forEach((field: string) => {
             const value = page[field];
             if (value) new_props[field] = value;
-        })
+        });
     };
 
     if (settings.getFromInlineField && app.plugins.enabledPlugins.has("dataview")) {
         const api = app.plugins.plugins.dataview?.api;
         if (api) {
-            getResults(api)
+            getResults(api);
         }
         else
             this.plugin.registerEvent(
@@ -63,7 +63,7 @@ export function fetchTargetAttributesSync(app: App, settings: SuperchargedLinksS
             );
     }
 
-    return new_props
+    return new_props;
 }
 
 function setLinkNewProps(link: HTMLElement, new_props: Record<string, string>) {
@@ -80,7 +80,7 @@ function setLinkNewProps(link: HTMLElement, new_props: Record<string, string>) {
 
         // Only update if value is different
         if (!newValue || curValue != newValue) {
-            link.setAttribute("data-link-" + key, new_props[key])
+            link.setAttribute("data-link-" + key, new_props[key]);
         }
     });
     if (!link.hasClass("data-link-icon")) {
@@ -95,7 +95,7 @@ function setLinkNewProps(link: HTMLElement, new_props: Record<string, string>) {
 }
 
 function updateLinkExtraAttributes(app: App, settings: SuperchargedLinksSettings, link: HTMLElement, destName: string) {
-    const linkHref = link.getAttribute('href').split('#')[0];
+    const linkHref = link.getAttribute("href").split("#")[0];
     const dest = app.metadataCache.getFirstLinkpathDest(linkHref, destName);
 
     if (dest) {
@@ -105,17 +105,16 @@ function updateLinkExtraAttributes(app: App, settings: SuperchargedLinksSettings
 }
 
 export function updateDivExtraAttributes(app: App, settings: SuperchargedLinksSettings, link: HTMLElement, destName: string, linkName?: string) {
-    if (!linkName) {
-        linkName = link.textContent;
-    }
-    if (!!link.parentElement.getAttribute('data-path')) {
+    let linkNameOutput = linkName ?? link.textContent;
+
+    if (link.parentElement.getAttribute("data-path")) {
         // File Browser
-        linkName = link.parentElement.getAttribute('data-path');
+        linkNameOutput = link.parentElement.getAttribute("data-path");
     } else if (link.parentElement.getAttribute("class") == "suggestion-content" && !!link.nextElementSibling) {
         // Auto complete
-        linkName = link.nextElementSibling.textContent + linkName;
+        linkNameOutput = link.nextElementSibling.textContent + linkName;
     }
-    const dest = app.metadataCache.getFirstLinkpathDest(getLinkpath(linkName), destName)
+    const dest = app.metadataCache.getFirstLinkpathDest(getLinkpath(linkNameOutput), destName);
 
     if (dest) {
         const new_props = fetchTargetAttributesSync(app, settings, dest, true);
@@ -126,7 +125,7 @@ export function updateDivExtraAttributes(app: App, settings: SuperchargedLinksSe
 
 export function updateElLinks(app: App, plugin: SuperchargedLinks, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
     const settings = plugin.settings;
-    const links = el.querySelectorAll('a.internal-link');
+    const links = el.querySelectorAll("a.internal-link");
     const destName = ctx.sourcePath.replace(/(.*).md/, "$1");
     links.forEach((link: HTMLElement) => {
         updateLinkExtraAttributes(app, settings, link, destName);
@@ -136,7 +135,7 @@ export function updateElLinks(app: App, plugin: SuperchargedLinks, el: HTMLEleme
 
 export function updatePropertiesPane(propertiesEl: HTMLElement, file: TFile, app: App, plugin: SuperchargedLinks) {
     const frontmatter = app.metadataCache.getCache(file.path)?.frontmatter;
-    if(!!frontmatter) {
+    if(frontmatter) {
         const nodes = propertiesEl.querySelectorAll("div.internal-link > .multi-select-pill-content");
         for (let i = 0; i < nodes.length; ++i) {
             const el = nodes[i] as HTMLElement;
@@ -159,7 +158,7 @@ export function updatePropertiesPane(propertiesEl: HTMLElement, file: TFile, app
                     }
                 }
             }
-            if (!!foundS) {
+            if (foundS) {
                 updateDivExtraAttributes(plugin.app, plugin.settings, el, "", foundS);
             }
         }
@@ -181,7 +180,7 @@ export function updatePropertiesPane(propertiesEl: HTMLElement, file: TFile, app
                     foundS = split[0];
                 }
             }
-            if (!!foundS) {
+            if (foundS) {
                 updateDivExtraAttributes(plugin.app, plugin.settings, el, "", foundS);
             }
         }
@@ -198,7 +197,7 @@ export function updateVisibleLinks(app: App, plugin: SuperchargedLinks) {
 
             // @ts-ignore
             const metadata = leaf.view?.metadataEditor.contentEl;
-            if (!!metadata) {//
+            if (metadata) {//
                 updatePropertiesPane(metadata, file, app, plugin);
             }
 
@@ -214,15 +213,15 @@ export function updateVisibleLinks(app: App, plugin: SuperchargedLinks) {
 
             if (cachedFile?.links) {
                 cachedFile.links.forEach((link: LinkCache) => {
-                    const fileName = file.path.replace(/(.*).md/, "$1")
-                    const dest = app.metadataCache.getFirstLinkpathDest(link.link, fileName)
+                    const fileName = file.path.replace(/(.*).md/, "$1");
+                    const dest = app.metadataCache.getFirstLinkpathDest(link.link, fileName);
                     if (dest) {
-                        const new_props = fetchTargetAttributesSync(app, settings, dest, false)
-                        const internalLinks = leaf.view.containerEl.querySelectorAll(`a.internal-link[href="${link.link}"]`)
-                        internalLinks.forEach((internalLink: HTMLElement) => setLinkNewProps(internalLink, new_props))
+                        const new_props = fetchTargetAttributesSync(app, settings, dest, false);
+                        const internalLinks = leaf.view.containerEl.querySelectorAll(`a.internal-link[href="${link.link}"]`);
+                        internalLinks.forEach((internalLink: HTMLElement) => setLinkNewProps(internalLink, new_props));
                     }
-                })
+                });
             }
         }
-    })
+    });
 }

@@ -1,45 +1,45 @@
-import SuperchargedLinks from "main"
+import { SuperchargedLinks } from "plugin/index";
 import {
     Modal,
     Setting
-} from "obsidian"
-import {matchTypes, matchPreview, CSSLink, matchPreviewPath, selectorType, SelectorTypes, MatchTypes} from './cssLink'
-import {SuperchargedLinksSettings} from "../settings/SuperchargedLinksSettings";
+} from "obsidian";
+import {matchTypes, matchPreview, CSSLink, matchPreviewPath, selectorType, SelectorTypes, MatchTypes} from "./cssLink";
+import {SuperchargedLinksSettings} from "settings/SuperchargedLinksSettings";
 
 export function displayText(link: CSSLink, settings: SuperchargedLinksSettings): string {
-    if (link.type === 'tag') {
+    if (link.type === "tag") {
         if (!link.value) {
             return "<b>Please choose a tag</b>";
         }
         return `<span class="data-link-icon data-link-text data-link-icon-after" data-link-tags="${link.value}">Note</span> has tag <a class="tag">#${link.value}</a>`;
     }
-    else if (link.type === 'attribute') {
+    else if (link.type === "attribute") {
         if (settings.targetAttributes.length === 0) {
-            return `<b>No attributes added to "Target attributes". Go to plugin settings to add them.</b>`
+            return "<b>No attributes added to \"Target attributes\". Go to plugin settings to add them.</b>";
         }
         if (!link.name) {
             return "<b>Please choose an attribute name.</b>";
         }
         if (!link.value){
-            return "<b>Please choose an attribute value.</b>"
+            return "<b>Please choose an attribute value.</b>";
         }
         return `<span class="data-link-icon data-link-text data-link-icon-after" data-link-${link.name}="${link.value}">Note</span> has attribute <b>${link.name}</b> ${matchPreview[link.match]} <b>${link.value}</b>.`;
     }
     if (!link.value) {
-        return "<b>Please choose a path.</b>"
+        return "<b>Please choose a path.</b>";
     }
-    return `The path of the <span class="data-link-icon data-link-text data-link-icon-after" data-link-path="${link.value}">note</span> ${matchPreviewPath[link.match]} <b>${link.value}</b>`
+    return `The path of the <span class="data-link-icon data-link-text data-link-icon-after" data-link-path="${link.value}">note</span> ${matchPreviewPath[link.match]} <b>${link.value}</b>`;
 }
 
 export function updateDisplay(textArea: HTMLElement, link: CSSLink, settings: SuperchargedLinksSettings): boolean {
-    let toDisplay: string = displayText(link, settings);
+    const toDisplay: string = displayText(link, settings);
     let disabled = false;
-    if (link.type === 'tag') {
+    if (link.type === "tag") {
         if (!link.value) {
             disabled = true;
         }
     }
-    else if (link.type === 'attribute') {
+    else if (link.type === "attribute") {
         if (settings.targetAttributes.length === 0) {
             disabled = true;
         }
@@ -61,12 +61,12 @@ export function updateDisplay(textArea: HTMLElement, link: CSSLink, settings: Su
 
 class CSSBuilderModal extends Modal {
 
-    plugin: SuperchargedLinks
-    cssLink: CSSLink
+    plugin: SuperchargedLinks;
+    cssLink: CSSLink;
     saveCallback: (cssLink: CSSLink) => void;
 
     constructor(plugin: SuperchargedLinks, saveCallback: (cssLink: CSSLink) => void, cssLink: CSSLink=null) {
-        super(plugin.app)
+        super(plugin.app);
         this.cssLink = cssLink;
         if (!cssLink) {
             this.cssLink = new CSSLink();
@@ -78,7 +78,7 @@ class CSSBuilderModal extends Modal {
 
 
     onOpen() {
-        this.titleEl.setText(`Select what links to style!`)
+        this.titleEl.setText("Select what links to style!");
         // is tag
         const matchAttrPlaceholder = "Attribute value to match.";
         const matchTagPlaceholder = "Note tag to match (without #).";
@@ -126,7 +126,7 @@ class CSSBuilderModal extends Modal {
                     cssLink.name = name;
                     saveButton.setDisabled(updateDisplay(preview, cssLink, plugin.settings));
                 });
-            })
+            });
 
 
         // attribute value
@@ -136,28 +136,28 @@ class CSSBuilderModal extends Modal {
             .addText(t => {
                 t.setValue(cssLink.value);
                 t.onChange(value => {
-                        cssLink.value = value;
-                        saveButton.setDisabled(updateDisplay(preview, cssLink, plugin.settings));
+                    cssLink.value = value;
+                    saveButton.setDisabled(updateDisplay(preview, cssLink, plugin.settings));
                 });
             });
 
-        this.contentEl.createEl('h4', {text: 'Advanced'});
+        this.contentEl.createEl("h4", {text: "Advanced"});
         // matching type
         const matchingType = new Setting(this.contentEl)
             .setName("Matching type")
             .setDesc("How to compare the attribute or path with the given value.")
             .addDropdown(dc => {
                 Object.keys(matchTypes).forEach((key: MatchTypes)=> {
-                    dc.addOption(key, matchTypes[key])
+                    dc.addOption(key, matchTypes[key]);
                     if (key == cssLink.match) {
-                        dc.setValue(key)
+                        dc.setValue(key);
                     }
-                })
+                });
                 dc.onChange((value: "exact" | "contains" | "startswith" | "endswith") => {
                     cssLink.match = value;
                     saveButton.setDisabled(updateDisplay(preview, cssLink, plugin.settings));
                 });
-            })
+            });
 
 
         // case sensitive
@@ -170,21 +170,21 @@ class CSSBuilderModal extends Modal {
                     cssLink.matchCaseSensitive = value;
                     b.setDisabled(updateDisplay(preview, cssLink, plugin.settings));
                 });
-            })
+            });
 
         if (!this.cssLink.name && this.plugin.settings.targetAttributes.length > 0) {
-           this.cssLink.name = this.plugin.settings.targetAttributes[0];
+            this.cssLink.name = this.plugin.settings.targetAttributes[0];
         }
 
         const updateContainer = function(type: SelectorTypes) {
-            if (type === 'attribute') {
+            if (type === "attribute") {
                 attrName.settingEl.show();
                 attrValue.nameEl.setText(matchAttrTxt);
                 attrValue.descEl.setText(matchAttrPlaceholder);
                 matchingType.settingEl.show();
                 caseSensitiveTogglerContainer.settingEl.show();
             }
-            else if (type === 'tag') {
+            else if (type === "tag") {
                 attrName.settingEl.hide();
                 attrValue.nameEl.setText(matchTagTxt);
                 attrValue.descEl.setText(matchTagPlaceholder);
@@ -198,7 +198,7 @@ class CSSBuilderModal extends Modal {
                 matchingType.settingEl.show();
                 caseSensitiveTogglerContainer.settingEl.show();
             }
-        }
+        };
 
         new Setting(this.contentEl)
             .setName("Style options")
@@ -207,40 +207,40 @@ class CSSBuilderModal extends Modal {
             .addToggle(t => {
                 t.onChange(value => {
                     cssLink.selectText = value;
-                })
+                });
                 t.setValue(cssLink.selectText);
                 t.setTooltip("Style link text");
             })
             .addToggle(t => {
                 t.onChange(value => {
                     cssLink.selectPrepend = value;
-                })
+                });
                 t.setValue(cssLink.selectPrepend);
                 t.setTooltip("Add content before link");
             })
             .addToggle(t => {
                 t.onChange(value => {
                     cssLink.selectAppend = value;
-                })
+                });
                 t.setValue(cssLink.selectAppend);
                 t.setTooltip("Add content after link");
             })
             .addToggle(t => {
                 t.onChange(value => {
                     cssLink.selectBackground = value;
-                })
+                });
                 t.setValue(cssLink.selectBackground);
                 t.setTooltip("Add optional background or underline to link");
             });
 
 
-        this.contentEl.createEl('h4', {text: 'Result'});
+        this.contentEl.createEl("h4", {text: "Result"});
         const modal = this;
         const saveButton = new Setting(this.contentEl)
             .setName("Preview")
             .setDesc("")
             .addButton(b => {
-                b.setButtonText("Save")
+                b.setButtonText("Save");
                 b.onClick(() => {
                     modal.saveCallback(cssLink);
                     modal.close();
@@ -255,4 +255,4 @@ class CSSBuilderModal extends Modal {
 
 }
 
-export { CSSBuilderModal }
+export { CSSBuilderModal };
