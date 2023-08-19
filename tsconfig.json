@@ -24,7 +24,7 @@
         "./src/settings/*"
       ],
       "cm-language/*": [
-        "./src/external/cm-language/src/*"
+        "./src/external/cm-language/*"
       ]
     },
     "typeRoots": [
@@ -48,7 +48,9 @@
     "src/plugin/*.ts",
     "src/settings/*.ts",
     "src/external/cm-language/src/*.ts"
-  ],
+,
+"src/external/cm-language/fold.ts"
+],
   "exclude": [
     "**/*.js",
     ".yarn/**/*"

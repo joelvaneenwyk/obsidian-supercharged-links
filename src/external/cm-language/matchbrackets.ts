@@ -56,7 +56,7 @@ function defaultRenderMatch(match: MatchResult) {
 
 const bracketMatchingState = StateField.define<DecorationSet>({
     create() {
-        return Decoration.none; 
+        return Decoration.none;
     },
     update(deco, tr) {
         if (!tr.docChanged && !tr.selection) return deco;
