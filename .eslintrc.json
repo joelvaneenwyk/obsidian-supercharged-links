@@ -24,31 +24,31 @@
                 "allowSingleLine": false
             }
         ],
-        // "padding-line-between-statements": [
-        //     "error",
-        //     {
-        //         "blankLine": "always",
-        //         "prev": [
-        //             "const",
-        //             "let",
-        //             "var"
-        //         ],
-        //         "next": "*"
-        //     },
-        //     {
-        //         "blankLine": "any",
-        //         "prev": [
-        //             "const",
-        //             "let",
-        //             "var"
-        //         ],
-        //         "next": [
-        //             "const",
-        //             "let",
-        //             "var"
-        //         ]
-        //     }
-        // ],
+        "padding-line-between-statements": [
+            "error",
+            {
+                "blankLine": "any",
+                "prev": [
+                    "const",
+                    "let",
+                    "var"
+                ],
+                "next": "*"
+            },
+            {
+                "blankLine": "any",
+                "prev": [
+                    "const",
+                    "let",
+                    "var"
+                ],
+                "next": [
+                    "const",
+                    "let",
+                    "var"
+                ]
+            }
+        ],
         "no-multiple-empty-lines": [
             "error",
             {
