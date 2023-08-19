@@ -13,22 +13,21 @@
   "keywords": [],
   "author": "Joel Van Eenwyk",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "@codemirror/buildhelper": "^1.0.0",
-    "@codemirror/state": "^6.2.1",
-    "@codemirror/view": "^6.16.0",
+    "@codemirror/language": "https://github.com/lishid/cm-language",
+    "@codemirror/state": "^6.0.0",
+    "@codemirror/view": "^6.0.0",
     "@lezer/common": "^1.0.0",
     "@lezer/highlight": "^1.0.0",
     "@lezer/javascript": "^1.0.0",
     "@lezer/lr": "^1.0.0",
-    "@rollup/plugin-commonjs": "^25.0.4",
-    "@rollup/plugin-node-resolve": "^15.2.0",
-    "@rollup/plugin-typescript": "^11.1.2",
     "@types/jest": "^29.5.3",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.5.1",
     "@typescript-eslint/eslint-plugin": "6.4.0",
     "@typescript-eslint/parser": "6.4.0",
+    "@yarnpkg/sdks": "^3.0.0-rc.49",
     "builtin-modules": "3.3.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.19.2",
@@ -36,15 +35,10 @@
     "ist": "^1.1.7",
     "obsidian": "^1.4.0",
     "obsidian-dataview": "^0.5.56",
-    "rollup": "^3.28.0",
     "shx": "^0.3.4",
     "standard-version": "^9.5.0",
     "style-mod": "^4.0.3",
     "tslib": "^2.6.2",
     "typescript": "^5.1.6"
-  },
-  "dependencies": {
-    "@codemirror/language": "^6.9.0",
-    "@yarnpkg/sdks": "^3.0.0-rc.49"
   }
 }

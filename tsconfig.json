@@ -1,18 +1,16 @@
 {
   "compilerOptions": {
-    // "noImplicitReturns": true,
-    // "noUnusedLocals": true,
-    // "strict": true,
-    // "preserveConstEnums": true,
-    // "stripInternal": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "preserveConstEnums": true,
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
     "target": "ES2017",
     "allowJs": true,
-    // "noImplicitAny": true,
     "moduleResolution": "node",
     "importHelpers": true,
+    "outDir": "./dist",
     "paths": {
       "cssBuilder/*": [
         "./src/cssBuilder/*"
@@ -27,15 +25,23 @@
         "./src/settings/*"
       ]
     },
+    "typeRoots": [
+      "typings"
+    ],
     "lib": [
       "dom",
       "es5",
+      "es6",
       "scripthost",
       "es2020"
     ]
   },
   "include": [
-    "main.ts",
+    "typings/*.d.ts",
+    "src/main.ts",
     "src/**/*.ts"
+  ],
+  "exclude": [
+    "**/*.js"
   ]
 }

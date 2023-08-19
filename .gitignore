@@ -10,6 +10,8 @@ package-lock.json
 .yarn/unplugged/
 .yarn/install-state.gz
 .pnp.*
+src/**/*.js
+dist/
 
 # build
 *.js.map
