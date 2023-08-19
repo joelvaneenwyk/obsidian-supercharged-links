@@ -21,7 +21,7 @@ export const foldNodeProp = new NodeProp<(node: SyntaxNode, state: EditorState) 
 /// the first and the last child of a syntax node. Useful for nodes
 /// that start and end with delimiters.
 export function foldInside(node: SyntaxNode): {from: number, to: number} | null {
-    const first = node.firstChild, last = node.lastChild;
+    const first = node.firstChild; const last = node.lastChild;
     return first && first.to < last!.from ? {from: first.to, to: last!.type.isError ? node.to : last!.from} : null;
 }
 
@@ -64,7 +64,7 @@ export function foldable(state: EditorState, lineStart: number, lineEnd: number)
 type DocRange = {from: number, to: number}
 
 function mapRange(range: DocRange, mapping: ChangeDesc) {
-    const from = mapping.mapPos(range.from, 1), to = mapping.mapPos(range.to, -1);
+    const from = mapping.mapPos(range.from, 1); const to = mapping.mapPos(range.to, -1);
     return from >= to ? undefined : {from, to};
 }
 
@@ -108,7 +108,7 @@ export const foldState = StateField.define<DecorationSet>({
         }
         // Clear folded ranges that cover the selection head
         if (tr.selection) {
-            let onSelection = false, {head} = tr.selection.main;
+            let onSelection = false; const {head} = tr.selection.main;
             folded.between(head, head, (a, b) => {
                 if (a < head && b > head) onSelection = true; 
             });
@@ -134,7 +134,7 @@ export const foldState = StateField.define<DecorationSet>({
         if (!Array.isArray(value) || value.length % 2) throw new RangeError("Invalid JSON for fold state");
         const ranges = [];
         for (let i = 0; i < value.length;) {
-            const from = value[i++], to = value[i++];
+            const from = value[i++]; const to = value[i++];
             if (typeof from != "number" || typeof to != "number") throw new RangeError("Invalid JSON for fold state");
             ranges.push(foldWidget.range(from, to));
         }
@@ -193,7 +193,7 @@ export const unfoldCode: Command = view => {
 };
 
 function announceFold(view: EditorView, range: {from: number, to: number}, fold = true) {
-    const lineFrom = view.state.doc.lineAt(range.from).number, lineTo = view.state.doc.lineAt(range.to).number;
+    const lineFrom = view.state.doc.lineAt(range.from).number; const lineTo = view.state.doc.lineAt(range.to).number;
     return EditorView.announce.of(`${view.state.phrase(fold ? "Folded lines" : "Unfolded lines")} ${lineFrom} ${
         view.state.phrase("to")} ${lineTo}.`);
 }
@@ -206,9 +206,9 @@ function announceFold(view: EditorView, range: {from: number, to: number}, fold 
 /// document is so big that the parser decided not to parse it
 /// entirely).
 export const foldAll: Command = view => {
-    let {state} = view, effects = [];
+    const {state} = view; const effects = [];
     for (let pos = 0; pos < state.doc.length;) {
-        const line = view.lineBlockAt(pos), range = foldable(state, line.from, line.to);
+        const line = view.lineBlockAt(pos); const range = foldable(state, line.from, line.to);
         if (range) effects.push(foldEffect.of(range));
         pos = (range ? view.lineBlockAt(range.to) : line).to + 1;
     }
@@ -306,7 +306,7 @@ export function codeFolding(config?: FoldConfig): Extension {
 
 const foldWidget = Decoration.replace({widget: new class extends WidgetType {
     toDOM(view: EditorView) {
-        let {state} = view, conf = state.facet(foldConfig);
+        const {state} = view; const conf = state.facet(foldConfig);
         const onclick = (event: Event) => {
             const line = view.lineBlockAt(view.posAtDOM(event.target as HTMLElement));
             const folded = findFold(view.state, line.from, line.to);
@@ -377,7 +377,7 @@ class FoldMarker extends GutterMarker {
 /// to fold or unfold the line).
 export function foldGutter(config: FoldGutterConfig = {}): Extension {
     const fullConfig = {...foldGutterDefaults, ...config};
-    const canFold = new FoldMarker(fullConfig, true), canUnfold = new FoldMarker(fullConfig, false);
+    const canFold = new FoldMarker(fullConfig, true); const canUnfold = new FoldMarker(fullConfig, false);
 
     const markers = ViewPlugin.fromClass(class {
         markers: RangeSet<FoldMarker>;

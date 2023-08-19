@@ -39,7 +39,7 @@ export function getIndentUnit(state: EditorState) {
 /// [`indentUnit`](#language.indentUnit) facet contains
 /// tabs.
 export function indentString(state: EditorState, cols: number) {
-    let result = "", ts = state.tabSize, ch = state.facet(indentUnit)[0];
+    let result = ""; const ts = state.tabSize; let ch = state.facet(indentUnit)[0];
     if (ch == "\t") {
         while (cols >= ts) {
             result += "\t";
@@ -207,9 +207,9 @@ function ignoreClosed(cx: TreeIndentContext) {
 function indentStrategy(tree: SyntaxNode): ((context: TreeIndentContext) => number | null) | null {
     const strategy = tree.type.prop(indentNodeProp);
     if (strategy) return strategy;
-    let first = tree.firstChild, close: readonly string[] | undefined;
+    const first = tree.firstChild; let close: readonly string[] | undefined;
     if (first && (close = first.type.prop(NodeProp.closedBy))) {
-        const last = tree.lastChild, closed = last && close.indexOf(last.name) > -1;
+        const last = tree.lastChild; const closed = last && close.indexOf(last.name) > -1;
         return cx => delimitedStrategy(cx, true, 1, undefined, closed && !ignoreClosed(cx) ? last!.from : undefined);
     }
     return tree.parent == null ? topIndent : null;
@@ -287,7 +287,7 @@ function isParent(parent: SyntaxNode, of: SyntaxNode) {
 // if so, return the opening token.
 function bracketedAligned(context: TreeIndentContext) {
     const tree = context.node;
-    const openToken = tree.childAfter(tree.from), last = tree.lastChild;
+    const openToken = tree.childAfter(tree.from); const last = tree.lastChild;
     if (!openToken) return null;
     const sim = context.options.simulateBreak;
     const openLine = context.state.doc.lineAt(openToken.from);
@@ -316,7 +316,7 @@ export function delimitedIndent({closing, align = true, units = 1}: {closing: st
 }
 
 function delimitedStrategy(context: TreeIndentContext, align: boolean, units: number, closing?: string, closedAt?: number) {
-    const after = context.textAfter, space = after.match(/^\s*/)![0].length;
+    const after = context.textAfter; const space = after.match(/^\s*/)![0].length;
     const closed = closing && after.slice(space, space + closing.length) == closing || closedAt == context.pos + space;
     const aligned = align ? bracketedAligned(context) : null;
     if (aligned) return closed ? context.column(aligned.from) : context.column(aligned.to);
@@ -358,11 +358,11 @@ export function indentOnInput(): Extension {
         if (!tr.docChanged || !tr.isUserEvent("input.type") && !tr.isUserEvent("input.complete")) return tr;
         const rules = tr.startState.languageDataAt<RegExp>("indentOnInput", tr.startState.selection.main.head);
         if (!rules.length) return tr;
-        const doc = tr.newDoc, {head} = tr.newSelection.main, line = doc.lineAt(head);
+        const doc = tr.newDoc; const {head} = tr.newSelection.main; const line = doc.lineAt(head);
         if (head > line.from + DontIndentBeyond) return tr;
         const lineStart = doc.sliceString(line.from, head);
         if (!rules.some(r => r.test(lineStart))) return tr;
-        let {state} = tr, last = -1, changes = [];
+        const {state} = tr; let last = -1; const changes = [];
         for (const {head} of state.selection.ranges) {
             const line = state.doc.lineAt(head);
             if (line.from == last) continue;

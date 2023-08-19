@@ -224,6 +224,8 @@ class CSSBuilderModal extends Modal {
 
         this.contentEl.createEl("h4", {text: "Result"});
         const modal = this;
+
+        // generate button
         const saveButton = new Setting(this.contentEl)
             .setName("Preview")
             .setDesc("")
@@ -234,7 +236,6 @@ class CSSBuilderModal extends Modal {
                     modal.close();
                 });
             });
-        // generate button
 
         const preview = saveButton.nameEl;
         updateContainer(cssLink.type);

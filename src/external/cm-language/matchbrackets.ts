@@ -30,7 +30,7 @@ const baseTheme = EditorView.baseTheme({
     "&.cm-focused .cm-nonmatchingBracket": {backgroundColor: "#bb555544"}
 });
 
-const DefaultScanDist = 10000, DefaultBrackets = "()[]{}";
+const DefaultScanDist = 10000; const DefaultBrackets = "()[]{}";
 
 const bracketMatchingConfig = Facet.define<Config, Required<Config>>({
     combine(configs) {
@@ -43,8 +43,8 @@ const bracketMatchingConfig = Facet.define<Config, Required<Config>>({
     }
 });
 
-const matchingMark = Decoration.mark({class: "cm-matchingBracket"}),
-    nonmatchingMark = Decoration.mark({class: "cm-nonmatchingBracket"});
+const matchingMark = Decoration.mark({class: "cm-matchingBracket"});
+const nonmatchingMark = Decoration.mark({class: "cm-nonmatchingBracket"});
 
 function defaultRenderMatch(match: MatchResult) {
     const decorations = [];
@@ -132,8 +132,8 @@ function findHandle(node: SyntaxNodeRef) {
 /// properties are used from `config`, if given. Returns null if no
 /// bracket was found at `pos`, or a match result otherwise.
 export function matchBrackets(state: EditorState, pos: number, dir: -1 | 1, config: Config = {}): MatchResult | null {
-    const maxScanDistance = config.maxScanDistance || DefaultScanDist, brackets = config.brackets || DefaultBrackets;
-    const tree = syntaxTree(state), node = tree.resolveInner(pos, dir);
+    const maxScanDistance = config.maxScanDistance || DefaultScanDist; const brackets = config.brackets || DefaultBrackets;
+    const tree = syntaxTree(state); const node = tree.resolveInner(pos, dir);
     for (let cur: SyntaxNode | null = node; cur; cur = cur.parent) {
         const matches = matchingNodes(cur.type, dir, brackets);
         if (matches && cur.from < cur.to) {
@@ -148,8 +148,8 @@ export function matchBrackets(state: EditorState, pos: number, dir: -1 | 1, conf
 
 function matchMarkedBrackets(_state: EditorState, _pos: number, dir: -1 | 1, token: SyntaxNode,
     handle: SyntaxNodeRef, matching: readonly string[], brackets: string) {
-    const parent = token.parent, firstToken = {from: handle.from, to: handle.to};
-    let depth = 0, cursor = parent?.cursor();
+    const parent = token.parent; const firstToken = {from: handle.from, to: handle.to};
+    let depth = 0; const cursor = parent?.cursor();
     if (cursor && (dir < 0 ? cursor.childBefore(token.from) : cursor.childAfter(token.to))) {
         do {
             if (dir < 0 ? cursor.to <= token.from : cursor.from >= token.to) {
@@ -182,7 +182,7 @@ function matchPlainBrackets(state: EditorState, pos: number, dir: number, tree: 
     if (bracket < 0 || (bracket % 2 == 0) != (dir > 0)) return null;
 
     const startToken = {from: dir < 0 ? pos - 1 : pos, to: dir > 0 ? pos + 1 : pos};
-    let iter = state.doc.iterRange(pos, dir > 0 ? state.doc.length : 0), depth = 0;
+    const iter = state.doc.iterRange(pos, dir > 0 ? state.doc.length : 0); let depth = 0;
     for (let distance = 0; !(iter.next()).done && distance <= maxScanDistance;) {
         const text = iter.value;
         if (dir < 0) distance += text.length;

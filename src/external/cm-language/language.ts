@@ -91,9 +91,9 @@ export class Language {
         this.extension = [
             language.of(this),
             EditorState.languageData.of((state, pos, side) => {
-                const top = topNodeAt(state, pos, side), data = top.type.prop(languageDataProp);
+                const top = topNodeAt(state, pos, side); const data = top.type.prop(languageDataProp);
                 if (!data) return [];
-                const base = state.facet(data), sub = top.type.prop(sublanguageProp);
+                const base = state.facet(data); const sub = top.type.prop(sublanguageProp);
                 if (sub) {
                     const innerNode = top.resolve(pos - top.from, side);
                     for (const sublang of sub) {
@@ -161,7 +161,7 @@ export class Language {
 }
 
 function topNodeAt(state: EditorState, pos: number, side: -1 | 0 | 1) {
-    let topLang = state.facet(language), tree = syntaxTree(state).topNode;
+    const topLang = state.facet(language); let tree = syntaxTree(state).topNode;
     if (!topLang || topLang.allowsNesting) {
         for (let node: SyntaxNode | null = tree; node; node = node.enter(pos, side, IterMode.ExcludeBuffers)) {
             if (node.type.isTop) tree = node;
@@ -403,7 +403,7 @@ export class ParseContext {
   
     /// @internal
     takeTree() {
-        let pos, tree: Tree | undefined | null;
+        let pos; let tree: Tree | undefined | null;
         if (this.parse && (pos = this.parse.parsedPos) >= this.treeLen) {
             if (this.parse.stoppedAt == null || this.parse.stoppedAt > pos) this.parse.stopAt(pos);
             this.withContext(() => {
@@ -447,7 +447,7 @@ export class ParseContext {
             if (this.skipped.length) {
                 skipped = [];
                 for (const r of this.skipped) {
-                    const from = changes.mapPos(r.from, 1), to = changes.mapPos(r.to, -1);
+                    const from = changes.mapPos(r.from, 1); const to = changes.mapPos(r.to, -1);
                     if (from < to) skipped.push({from, to});
                 }
             }
@@ -501,7 +501,7 @@ export class ParseContext {
                 fragments: readonly TreeFragment[],
                 ranges: readonly {from: number, to: number}[]
             ): PartialParse {
-                const from = ranges[0].from, to = ranges[ranges.length - 1].to;
+                const from = ranges[0].from; const to = ranges[ranges.length - 1].to;
                 const parser = {
                     parsedPos: from,
                     advance() {
@@ -588,7 +588,7 @@ let requestIdle = (callback: (deadline?: IdleDeadline) => void) => {
 
 if (typeof requestIdleCallback != "undefined") {
     requestIdle = (callback: (deadline?: IdleDeadline) => void) => {
-        let idle = -1, timeout = setTimeout(() => {
+        let idle = -1; const timeout = setTimeout(() => {
             idle = requestIdleCallback(callback, {timeout: Work.MaxPause - Work.MinPause});
         }, Work.MinPause);
         return () => idle < 0 ? clearTimeout(timeout) : cancelIdleCallback(idle);
@@ -625,7 +625,7 @@ const parseWorker = ViewPlugin.fromClass(class ParseWorker {
 
     scheduleWork() {
         if (this.working) return;
-        const {state} = this.view, field = state.field(Language.state);
+        const {state} = this.view; const field = state.field(Language.state);
         if (field.tree != field.context.tree || !field.context.isDone(state.doc.length)) {
             this.working = requestIdle(this.work);
         }
@@ -641,7 +641,7 @@ const parseWorker = ViewPlugin.fromClass(class ParseWorker {
         }
         if (this.chunkBudget <= 0) return; // No more budget
 
-        const {state, viewport: {to: vpTo}} = this.view, field = state.field(Language.state);
+        const {state, viewport: {to: vpTo}} = this.view; const field = state.field(Language.state);
         if (field.tree == field.context.tree && field.context.isDone(vpTo + Work.MaxParseAhead)) return;
         const endTime = Date.now() + Math.min(
             this.chunkBudget, Work.Slice, deadline && !isInputPending ? Math.max(Work.MinSlice, deadline.timeRemaining() - 5) : 1e9);
