@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import "obsidian";
 import { DataviewApi } from "obsidian-dataview";
 

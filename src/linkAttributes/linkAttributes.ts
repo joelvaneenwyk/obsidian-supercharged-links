@@ -1,6 +1,6 @@
 import { App, getAllTags, getLinkpath, LinkCache, MarkdownPostProcessorContext, MarkdownView, TFile } from "obsidian"
-import { SuperchargedLinksSettings } from "src/settings/SuperchargedLinksSettings"
-import SuperchargedLinks from "../../main";
+import { SuperchargedLinksSettings } from "settings/SuperchargedLinksSettings"
+import { SuperchargedLinks } from "plugin/index";
 
 export function clearExtraAttributes(link: HTMLElement) {
     Object.values(link.attributes).forEach(attr => {
@@ -105,17 +105,16 @@ function updateLinkExtraAttributes(app: App, settings: SuperchargedLinksSettings
 }
 
 export function updateDivExtraAttributes(app: App, settings: SuperchargedLinksSettings, link: HTMLElement, destName: string, linkName?: string) {
-    if (!linkName) {
-        linkName = link.textContent;
-    }
+    let linkNameOutput = linkName ?? link.textContent;
+
     if (!!link.parentElement.getAttribute('data-path')) {
         // File Browser
-        linkName = link.parentElement.getAttribute('data-path');
+        linkNameOutput = link.parentElement.getAttribute('data-path');
     } else if (link.parentElement.getAttribute("class") == "suggestion-content" && !!link.nextElementSibling) {
         // Auto complete
-        linkName = link.nextElementSibling.textContent + linkName;
+        linkNameOutput = link.nextElementSibling.textContent + linkName;
     }
-    const dest = app.metadataCache.getFirstLinkpathDest(getLinkpath(linkName), destName)
+    const dest = app.metadataCache.getFirstLinkpathDest(getLinkpath(linkNameOutput), destName)
 
     if (dest) {
         const new_props = fetchTargetAttributesSync(app, settings, dest, true);

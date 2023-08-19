@@ -1,14 +1,32 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    // "noImplicitReturns": true,
+    // "noUnusedLocals": true,
+    // "strict": true,
+    // "preserveConstEnums": true,
+    // "stripInternal": true,
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
-    "target": "es6",
+    "target": "ES2017",
     "allowJs": true,
-    "noImplicitAny": true,
+    // "noImplicitAny": true,
     "moduleResolution": "node",
     "importHelpers": true,
+    "paths": {
+      "cssBuilder/*": [
+        "./src/cssBuilder/*"
+      ],
+      "linkAttributes/*": [
+        "./src/linkAttributes/*"
+      ],
+      "plugin/*": [
+        "./src/plugin/*"
+      ],
+      "settings/*": [
+        "./src/settings/*"
+      ]
+    },
     "lib": [
       "dom",
       "es5",
@@ -17,6 +35,7 @@
     ]
   },
   "include": [
-    "**/*.ts"
+    "main.ts",
+    "src/**/*.ts"
   ]
 }

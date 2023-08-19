@@ -1,5 +1,5 @@
 import {CSSLink, matchSign} from "./cssLink";
-import SuperchargedLinks from "../../main";
+import {SuperchargedLinks} from "plugin/index";
 
 
 const colorSet = [[

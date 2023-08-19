@@ -1,4 +1,4 @@
-import { CSSLink } from "../cssBuilder/cssLink";
+import { CSSLink } from "cssBuilder/cssLink";
 
 export interface SuperchargedLinksSettings {
 	targetAttributes: Array<string>;

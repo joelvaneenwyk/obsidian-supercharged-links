@@ -1,13 +1,12 @@
-import {App, editorViewField, MarkdownView, TFile} from "obsidian";
-import {SuperchargedLinksSettings} from "../settings/SuperchargedLinksSettings";
-import {Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType} from "@codemirror/view";
-import {RangeSetBuilder} from "@codemirror/state";
-import {syntaxTree} from "@codemirror/language";
-import {tokenClassNodeProp} from "@codemirror/language";
-import {fetchTargetAttributesSync} from "./linkAttributes";
+import { App, editorViewField, MarkdownView, TFile } from "obsidian";
+import { SuperchargedLinksSettings } from "settings/SuperchargedLinksSettings";
+import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
+import { RangeSetBuilder } from "@codemirror/state";
+import { Tree } from "@lezer/common";
+import { tokenClassNodeProp } from "@codemirror/language";
+import { fetchTargetAttributesSync } from "./linkAttributes";
 
-export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings)
-{
+export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings) {
     // Implements the live preview supercharging
     // Code structure based on https://github.com/nothingislost/obsidian-cm6-attributes/blob/743d71b0aa616407149a0b6ea5ffea28e2154158/src/main.ts
     // Code help credits to @NothingIsLost! They have been a great help getting this to work properly.
@@ -69,13 +68,11 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
 
                 let mdAliasFrom: number = null;
                 let mdAliasTo: number = null;
-                for (let {from, to} of view.visibleRanges) {
-                    syntaxTree(view.state).iterate({
+                for (let { from, to } of view.visibleRanges) {
+                    Tree(view.state).iterate({
                         from,
                         to,
                         enter: (node) => {
-
-
                             const tokenProps = node.type.prop(tokenClassNodeProp);
                             if (tokenProps) {
                                 const props = new Set(tokenProps.split(" "));
@@ -111,7 +108,7 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
                                         try {
                                             file = app.vault.getAbstractFileByPath(decodeURIComponent(linkText)) as TFile;
                                         }
-                                        catch(e) {}
+                                        catch (e) { }
                                     }
                                     if (file) {
                                         let _attributes = fetchTargetAttributesSync(app, settings, file, true);

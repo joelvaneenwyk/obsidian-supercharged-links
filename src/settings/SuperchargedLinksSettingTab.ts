@@ -1,8 +1,8 @@
 import { App, PluginSettingTab, Setting, debounce } from "obsidian"
-import SuperchargedLinks from "main"
-import { CSSBuilderModal, updateDisplay } from "../cssBuilder/cssBuilderModal";
-import { buildCSS } from "../cssBuilder/cssBuilder";
-import {updateVisibleLinks} from "../linkAttributes/linkAttributes";
+import { SuperchargedLinks } from "plugin/index"
+import { CSSBuilderModal, updateDisplay } from "cssBuilder/cssBuilderModal";
+import { buildCSS } from "cssBuilder/cssBuilder";
+import { updateVisibleLinks } from "linkAttributes/linkAttributes";
 
 export default class SuperchargedLinksSettingTab extends PluginSettingTab {
 	plugin: SuperchargedLinks;
@@ -43,7 +43,7 @@ export default class SuperchargedLinksSettingTab extends PluginSettingTab {
 		containerEl.createEl('h4', { text: 'Styling' });
 		const styleSettingDescription = containerEl.createDiv();
 		styleSettingDescription.innerHTML = `
-Styling can be done using the Style Settings plugin. 
+Styling can be done using the Style Settings plugin.
  <ol>
  <li>Create selectors down below.</li>
  <li>Go to the Style Settings tab and style your links!</li>

@@ -1,10 +1,10 @@
-import SuperchargedLinks from "main"
+import { SuperchargedLinks } from "plugin/index"
 import {
     Modal,
     Setting
 } from "obsidian"
 import {matchTypes, matchPreview, CSSLink, matchPreviewPath, selectorType, SelectorTypes, MatchTypes} from './cssLink'
-import {SuperchargedLinksSettings} from "../settings/SuperchargedLinksSettings";
+import {SuperchargedLinksSettings} from "settings/SuperchargedLinksSettings";
 
 export function displayText(link: CSSLink, settings: SuperchargedLinksSettings): string {
     if (link.type === 'tag') {
