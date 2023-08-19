@@ -6,6 +6,11 @@
 node_modules
 package-lock.json
 
+.yarn/cache/
+.yarn/unplugged/
+.yarn/install-state.gz
+.pnp.*
+
 # build
 *.js.map
 data.json
