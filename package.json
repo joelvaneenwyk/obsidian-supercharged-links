@@ -8,8 +8,8 @@
     "check": "tsc --skipLibCheck --noEmit",
     "build": "yarn check && node esbuild.config.mjs production",
     "deploy": "cross-env-shell \"yarn shx --verbose cp -u main.js manifest.json versions.json \"${PROJECT_CWD}/.obsidian/plugins/${npm_package_name}\" \"",
-    "lint": "eslint */**.ts esbuild.config.mjs",
-    "lint:fix": "eslint --fix */**.ts esbuild.config.mjs"
+    "lint": "eslint src/**/**.ts esbuild.config.mjs",
+    "lint:fix": "eslint --fix src/**/**.ts esbuild.config.mjs"
   },
   "keywords": [],
   "author": "Joel Van Eenwyk",
