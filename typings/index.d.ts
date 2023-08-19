@@ -32,7 +32,9 @@ declare module "obsidian" {
                     | [op: "rename", file: TAbstractFile, oldPath: string]
                     | [op: "delete", file: TFile]
                     | [op: "update", file: TFile]
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ) => any,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ctx?: any
         ): EventRef;
     }
