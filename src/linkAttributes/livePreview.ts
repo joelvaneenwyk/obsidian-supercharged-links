@@ -109,7 +109,9 @@ export function buildCMViewPlugin(app: App, _settings: SuperchargedLinksSettings
                                         try {
                                             file = app.vault.getAbstractFileByPath(decodeURIComponent(linkText)) as TFile;
                                         }
-                                        catch (e) { }
+                                        catch (e) {
+                                            // Just ignore the exception...
+                                        }
                                     }
                                     if (file) {
                                         const _attributes = fetchTargetAttributesSync(app, settings, file, true);

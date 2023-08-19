@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "preserveConstEnums": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
+    "outDir": "./dist",
     "module": "ESNext",
     "target": "ES2017",
-    "allowJs": false,
     "moduleResolution": "node",
     "importHelpers": true,
-    "outDir": "./dist",
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "allowJs": false,
     "paths": {
       "cssBuilder/*": [
         "./src/cssBuilder/*"
@@ -34,8 +33,10 @@
     "lib": [
       "dom",
       "es5",
-      "es6",
       "scripthost",
+      "es2018",
+      "DOM.Iterable",
+      "es6",
       "es2020"
     ]
   },
@@ -49,6 +50,7 @@
     "src/external/cm-language/src/*.ts"
   ],
   "exclude": [
-    "**/*.js"
+    "**/*.js",
+    ".yarn/**/*"
   ]
 }
