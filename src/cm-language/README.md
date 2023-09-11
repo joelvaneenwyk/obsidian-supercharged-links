@@ -1,3 +1,7 @@
+# Supercharged Links Externals
+
+<https://github.com/lishid/cm-language/commit/1aadcc247f20ccfda76424a9f853dbb4ee203fdc>
+
 # @codemirror/language [![NPM version](https://img.shields.io/npm/v/@codemirror/language.svg)](https://www.npmjs.org/package/@codemirror/language)
 
 [ [**WEBSITE**](https://codemirror.net/) | [**DOCS**](https://codemirror.net/docs/ref/#language) | [**ISSUES**](https://github.com/codemirror/dev/issues) | [**FORUM**](https://discuss.codemirror.net/c/next/) | [**CHANGELOG**](https://github.com/codemirror/language/blob/main/CHANGELOG.md) ]

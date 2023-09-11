@@ -12,7 +12,7 @@ insert_final_newline = true
 [*.{js,py,mjs,ts}]
 charset = utf-8
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # 4 space indentation
 [*.py]
@@ -22,11 +22,6 @@ indent_size = 4
 # Tab indentation (no size specified)
 [Makefile]
 indent_style = tab
-
-# Indentation override for all JS under lib directory
-[lib/**.js]
-indent_style = space
-indent_size = 2
 
 # Matches the exact files either package.json or .travis.yml
 [{package.json,.travis.yml}]

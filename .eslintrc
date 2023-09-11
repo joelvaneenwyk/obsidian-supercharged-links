@@ -1,0 +1,39 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "node": true,
+    "browser": true
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "json-files",
+    "prettier"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "no-unused-vars": "off",
+    "prefer-const": "error",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "indent": "off",
+    "one-var": [
+      "error",
+      "never"
+    ],
+    "quotes": "off",
+    "jsx-quotes": "off",
+    "no-mixed-spaces-and-tabs": "off",
+    "no-extra-semi": "off",
+    "one-var-declaration-per-line": "off",
+    "no-prototype-builtins": "off"
+  }
+}

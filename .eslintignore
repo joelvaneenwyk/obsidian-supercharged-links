@@ -1,0 +1,9 @@
+.yarn/
+node_modules/
+main.js
+.obsidian/
+.idea/
+.devcontainer/
+dist/
+Attachments/scripts/
+Source/**/*.js

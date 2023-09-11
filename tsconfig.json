@@ -1,35 +1,18 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
     "outDir": "./dist",
     "module": "ESNext",
     "target": "ES2017",
     "moduleResolution": "node",
     "importHelpers": true,
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
     "inlineSourceMap": true,
     "inlineSources": true,
-    "downlevelIteration": true,
     "esModuleInterop": true,
     "allowJs": false,
-    "paths": {
-      "cssBuilder/*": [
-        "./src/cssBuilder/*"
-      ],
-      "linkAttributes/*": [
-        "./src/linkAttributes/*"
-      ],
-      "plugin/*": [
-        "./src/plugin/*"
-      ],
-      "settings/*": [
-        "./src/settings/*"
-      ],
-      "cm-language/*": [
-        "./src/external/cm-language/src/*"
-      ]
-    },
-    "typeRoots": [
-      "typings"
-    ],
+    "strict": true,
     "lib": [
       "dom",
       "es5",
@@ -41,16 +24,11 @@
     ]
   },
   "include": [
-    "typings/*.d.ts",
-    "src/main.ts",
-    "src/cssBuilder/*.ts",
-    "src/linkAttributes/*.ts",
-    "src/plugin/*.ts",
-    "src/settings/*.ts",
-    "src/external/cm-language/src/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "**/*.js",
-    ".yarn/**/*"
+    ".yarn/**/*",
+    "dist/**/*"
   ]
 }
