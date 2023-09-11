@@ -13,6 +13,9 @@
     "esModuleInterop": true,
     "allowJs": false,
     "strict": true,
+    "types": [
+      "node"
+    ],
     "lib": [
       "dom",
       "es5",

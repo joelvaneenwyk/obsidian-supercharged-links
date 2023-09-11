@@ -7,7 +7,8 @@ import {
   updateVisibleLinks
 } from 'linkAttributes/linkAttributes';
 import { buildCMViewPlugin } from 'linkAttributes/livePreview';
-import { App, Dataview, DataviewApi, Plugin, PluginManifest, TFile, debounce } from 'obsidian';
+import { App, CachedMetadata, Plugin, PluginManifest, TFile, debounce } from 'obsidian';
+import { DataviewApi, DataviewPlugin } from 'obsidian-dataview';
 import SuperchargedLinksSettingTab from 'settings/SuperchargedLinksSettingTab';
 import { DEFAULT_SETTINGS, SuperchargedLinksSettings } from 'settings/SuperchargedLinksSettings';
 
@@ -50,16 +51,20 @@ export class SuperchargedLinks extends Plugin {
     return false;
   }
 
-  public get dataview(): Dataview | null {
-    let api: Dataview | null = null;
-    if (this.app.plugins.enabledPlugins.has('dataview')) {
-      api = this.app.plugins.plugins.dataview;
+  public get dataview(): DataviewPlugin | null {
+    let api: DataviewPlugin | null = null;
+    try {
+      if (this.app.plugins.enabledPlugins.has('dataview')) {
+        api = (this.app.plugins.plugins.dataview as DataviewPlugin) ?? null;
+      }
+    } catch (error) {
+      // ignore
     }
     return api;
   }
 
   public get dataviewApi(): DataviewApi | null {
-    return this.dataview?.api;
+    return this.dataview?.api ?? null;
   }
 
   async onload(): Promise<void> {
@@ -71,16 +76,16 @@ export class SuperchargedLinks extends Plugin {
       updateElLinks(SuperchargedLinks.application, SuperchargedLinks.instance, el, ctx);
     });
 
-    const updateLinks_ = function (plugin: SuperchargedLinks, _file: TFile) {
-      updateVisibleLinks(SuperchargedLinks.application, plugin);
-      plugin.observers.forEach(([observer, type, own_class]) => {
+    const updateLinks = function (_file: TFile) {
+      updateVisibleLinks(SuperchargedLinks.application, SuperchargedLinks.instance);
+      SuperchargedLinks.instance.observers.forEach(([observer, type, own_class]) => {
         const leaves = SuperchargedLinks.application.workspace.getLeavesOfType(type);
         leaves.forEach((leaf) => {
-          plugin.updateContainer(leaf.view.containerEl, plugin, own_class);
+          SuperchargedLinks.instance.updateContainer(
+            leaf.view.containerEl, SuperchargedLinks.instance, own_class);
         });
       });
     };
-    const updateLinks = updateLinks_.bind(this);
 
     // Live preview
     const ext = Prec.lowest(buildCMViewPlugin(this.app, this, this.settings));
@@ -101,14 +106,18 @@ export class SuperchargedLinks extends Plugin {
 
     // Update when
     // Debounced to prevent lag when writing
-    this.registerEvent(this.app.metadataCache.on('changed', debounce(updateLinks, 500, true)));
-
-    // Update when layout change
-    this.registerEvent(this.app.workspace.on('layout-change', debounce(updateLinks, 10, true)));
+    this.registerEvent(this.app.metadataCache.on(
+      'changed',
+      debounce(
+        (file: TFile, data: string, cache: CachedMetadata) => {
+          updateLinks(file);
+        }, 500, true)));
 
     // Update plugin views when layout changes
     // TODO: This is an expensive operation that seems like it is called fairly frequently. Maybe we can do this more efficiently?
-    this.registerEvent(this.app.workspace.on('layout-change', () => this.initViewObservers(this)));
+    this.registerEvent(this.app.workspace.on('layout-change', debounce(() => {
+      this.initViewObservers(this);
+    }, 10, true)));
   }
 
   initViewObservers(plugin: SuperchargedLinks) {

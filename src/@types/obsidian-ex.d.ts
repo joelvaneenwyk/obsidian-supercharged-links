@@ -5,6 +5,8 @@
 
 import { EditorState, Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import * as fs from "node/fs";
+import * as fsPromises from "node/fs/promises";
 import 'obsidian';
 import {
   App,
@@ -19,14 +21,13 @@ import {
   Reference,
   SplitDirection,
   TFile,
+  Vault,
   View,
   ViewState,
+  Workspace,
   WorkspaceLeaf
 } from 'obsidian';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DataviewPlugin = /*unresolved*/ any;
-type DataviewApi = /*unresolved*/ any;
+import { DataviewPlugin } from "obsidian-dataview";
 
 export interface ObsidianCommandInterface {
   executeCommandById(id: string): void;
@@ -527,13 +528,18 @@ type InternalPlugin =
   | 'workspaces'
   | 'zk-prefixer';
 
-interface InternalPluginInstance extends Plugin {
-  instance?: InternalPluginInstance;
+interface PluginEx extends Plugin {
+  instance?: PluginEx;
   options?: Record<string, any>;
 }
 
-interface InternalPluginRecord extends Record<InternalPlugin, InternalPluginInstance | undefined> {
-  backlink?: InternalPluginInstance;
+type PartialRecord<K extends keyof any, T> = {
+  [P in K]?: T;
+};
+
+interface PluginMapping extends PartialRecord<InternalPlugin, PluginEx> {
+  backlink?: PluginEx;
+  dataview?: PluginEx;
 }
 
 interface InternalPlugins extends Events {
@@ -552,7 +558,7 @@ interface InternalPlugins extends Events {
   /**
    * Plugin configs for internal plugins
    */
-  plugins: InternalPluginRecord;
+  plugins: PluginMapping;
   /**
    * @internal Request save of plugin configs
    */
@@ -613,7 +619,7 @@ interface KeyScope {
   /**
    * Scope where the key interceptor is registered
    */
-  scope: EScope;
+  scope: KeyScope;
 }
 
 // interface KeymapManager {
@@ -624,16 +630,16 @@ interface KeyScope {
 // 	/**
 // 	 * @internal
 // 	 */
-// 	prevScopes: EScope[];
+// 	prevScopes: KeyScope[];
 // 	/**
 // 	 * @internal - Root scope of the application
 // 	 */
-// 	rootScope: EScope;
+// 	rootScope: KeyScope;
 //
 // 	/**
 // 	 * Get the root scope of the application
 // 	 */
-// 	getRootScope: () => EScope;
+// 	getRootScope: () => KeyScope;
 // 	/**
 // 	 * Check whether a specific modifier was part of the keypress
 // 	 */
@@ -653,11 +659,11 @@ interface KeyScope {
 // 	/**
 // 	 * @internal - Pop a scope from the prevScopes stack
 // 	 */
-// 	popScope: (scope: EScope) => void;
+// 	popScope: (scope: KeyScope) => void;
 // 	/**
 // 	 * @internal - Push a scope to the prevScopes stack and set it as the current scope
 // 	 */
-// 	pushScope: (scope: EScope) => void;
+// 	pushScope: (scope: KeyScope) => void;
 // 	/**
 // 	 * @internal - Update last pressed modifiers
 // 	 */
@@ -1043,7 +1049,7 @@ interface Plugins {
   /**
    * Mapping of plugin ID to plugin instance
    */
-  plugins: Record<string, Plugin>;
+  plugins: PluginMapping;
   /**
    * Mapping of plugin ID to available updates
    */
@@ -1520,11 +1526,11 @@ interface RecentFileTracker {
   /**
    * Reference to Vault
    */
-  vault: EVault;
+  vault: Vault;
   /**
    * Reference to Workspace
    */
-  workspace: EWorkspace;
+  workspace: Workspace;
 
   /**
    * @internal
@@ -1677,7 +1683,7 @@ declare module 'obsidian' {
      * Manage the creation, deletion and renaming of files from the UI.
      * @remark Prefer using the `vault` API for programmatic file management
      */
-    fileManager: EFileManager;
+    fileManager: FileManager;
     // /**
     //  * @internal
     //  */
@@ -1712,7 +1718,7 @@ declare module 'obsidian' {
      * Manages the gathering and updating of metadata for all files in the vault
      * @tutorial Use for finding tags and backlinks for specific files, grabbing frontmatter properties, ...
      */
-    metadataCache: EMetadataCache;
+    metadataCache: MetadataCache;
     /**
      * Manages the frontmatter properties of the vault and the rendering of the properties
      * @tutorial Fetching properties used in all frontmatter fields, may potentially be used for adding custom frontmatter widgets
@@ -1746,7 +1752,7 @@ declare module 'obsidian' {
     /**
      * @internal Root keyscope of the application
      */
-    scope: EScope;
+    scope: Scope;
     /**
      * Manages the settings modal and its tabs
      * @tutorial Can be used to open the settings modal to a specific tab, extend the settings modal functionality, ...
@@ -1855,7 +1861,7 @@ declare module 'obsidian' {
     /**
      * @internal Initialize the entire application using the provided FS adapter
      */
-    initializeWithAdapter: (adapter: EDataAdapter) => Promise<void>;
+    initializeWithAdapter: (adapter: DataAdapter) => Promise<void>;
     /**
      * Load a value from the localstorage given key
      * @param key Key of value to load
@@ -1980,7 +1986,7 @@ declare module 'obsidian' {
     /**
      * @internal Scope that this scope is a child of
      */
-    parent: EScope | undefined;
+    parent: Scope | undefined;
     /**
      * @internal - Callback to execute when scope is matched
      */
@@ -2009,9 +2015,7 @@ declare module 'obsidian' {
   interface MetadataCache {
     on(
       name: 'dataview:api-ready',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback: (api: DataviewPlugin['api']) => any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ctx?: any
     ): EventRef;
     on(
@@ -2289,7 +2293,7 @@ declare module 'obsidian' {
     /**
      * Creates a new Markdown file in the vault at specified location
      */
-    createNewMarkdownFile: (location: TFolder = null, filename: string = null, contents: string = '') => Promise<TFile>;
+    createNewMarkdownFile: (location: TFolder, filename: string, contents: string) => Promise<TFile>;
     /**
      * Creates a new Markdown file based on linktext and path
      * @param filename - Name of the file to create
@@ -2319,7 +2323,7 @@ declare module 'obsidian' {
       primary_text: string,
       basename: string,
       secondary_text: string,
-      atStart: boolean = true
+      atStart: boolean
     ) => Promise<void>;
     /**
      * Iterate over all links in the vault with callback
@@ -2457,7 +2461,7 @@ declare module 'obsidian' {
     /**
      * Current active tab of the settings modal
      */
-    activateTab: ESettingTab;
+    activateTab: SettingTab;
     /**
      * @internal Container element containing the community plugins
      */
@@ -2473,11 +2477,11 @@ declare module 'obsidian' {
     /**
      * List of all plugin tabs (core and community, ordered by precedence)
      */
-    pluginTabs: ESettingTab[];
+    pluginTabs: SettingTab[];
     /**
      * List of all core settings tabs (editor, files & links, ...)
      */
-    settingTabs: ESettingTab[];
+    settingTabs: SettingTab[];
     /**
      * @internal Container element containing the core settings
      */
@@ -2500,7 +2504,7 @@ declare module 'obsidian' {
      * @internal Add a new plugin tab to the settings modal
      * @param tab Tab to add
      */
-    addSettingTab: (tab: ESettingTab) => void;
+    addSettingTab: (tab: SettingTab) => void;
     /**
      * @internal Closes the currently active tab
      */
@@ -2509,22 +2513,22 @@ declare module 'obsidian' {
      * @internal Check whether tab is a plugin tab
      * @param tab Tab to check
      */
-    isPluginSettingTab: (tab: ESettingTab) => boolean;
+    isPluginSettingTab: (tab: SettingTab) => boolean;
     /**
      * @internal Open a specific tab by tab reference
      * @param tab Tab to open
      */
-    openTab: (tab: ESettingTab) => void;
+    openTab: (tab: SettingTab) => void;
     /**
      * @internal Remove a plugin tab from the settings modal
      * @param tab Tab to remove
      */
-    removeSettingTab: (tab: ESettingTab) => void;
+    removeSettingTab: (tab: SettingTab) => void;
     /**
      * @internal Update the title of the modal
      * @param tab Tab to update the title to
      */
-    updateModalTitle: (tab: ESettingTab) => void;
+    updateModalTitle: (tab: SettingTab) => void;
     /**
      * @internal Update a tab section
      */
@@ -2791,7 +2795,7 @@ declare module 'obsidian' {
     /**
      * @internal Keyscope registered to the vault
      */
-    scope: EScope;
+    scope: KeyScope;
     /**
      * List of states that were closed and may be reopened
      */
@@ -3211,7 +3215,7 @@ declare module 'obsidian' {
 
   interface WorkspaceLeaf {
     id?: string;
-    view?: View;
+    view: View;
 
     tabHeaderEl: HTMLElement;
     tabHeaderInnerIconEl: HTMLElement;
@@ -3222,14 +3226,14 @@ declare module 'obsidian' {
     dom: HTMLElement;
     items: MenuItem[];
     onMouseOver: (evt: MouseEvent) => void;
-    hide: () => void;
+    hide: () => this;
   }
 
   interface MenuItem {
     callback: () => void;
     dom: HTMLElement;
     setSubmenu: () => Menu;
-    onClick: (evt: MouseEvent) => void;
+    onClick: (evt: MouseEvent | KeyboardEvent) => void;
     disabled: boolean;
   }
 
