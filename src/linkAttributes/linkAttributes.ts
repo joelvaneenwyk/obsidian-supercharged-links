@@ -10,7 +10,7 @@ import {
 } from 'obsidian';
 import { DataviewApi } from 'obsidian-dataview';
 import { SuperchargedLinks } from 'plugin/index';
-import { SuperchargedLinksSettings } from 'settings/SuperchargedLinksSettings';
+import { SuperchargedLinksSettings } from 'plugin/settings';
 
 export function clearExtraAttributes(link: HTMLElement) {
   Object.values(link.attributes).forEach((attr) => {

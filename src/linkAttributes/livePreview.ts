@@ -3,7 +3,7 @@ import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetTy
 import { SyntaxNodeRef, syntaxTree, tokenClassNodeProp } from 'cm-language/index';
 import { App, MarkdownView, TFile, editorViewField } from 'obsidian';
 import { SuperchargedLinks } from 'plugin/index';
-import { SuperchargedLinksSettings } from 'settings/SuperchargedLinksSettings';
+import { SuperchargedLinksSettings } from 'plugin/settings';
 import { fetchTargetAttributesSync } from './linkAttributes';
 
 export function buildCMViewPlugin(app: App, plugin: SuperchargedLinks, _settings: SuperchargedLinksSettings) {

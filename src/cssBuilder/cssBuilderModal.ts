@@ -1,6 +1,6 @@
 import { DropdownComponent, Modal, Setting } from 'obsidian';
 import { SuperchargedLinks } from 'plugin/index';
-import { SuperchargedLinksSettings } from 'settings/SuperchargedLinksSettings';
+import { SuperchargedLinksSettings } from 'plugin/settings';
 import {
   CSSLink,
   MatchTypes,

@@ -9,8 +9,8 @@ import {
 import { buildCMViewPlugin } from 'linkAttributes/livePreview';
 import { App, CachedMetadata, Plugin, PluginManifest, TFile, debounce } from 'obsidian';
 import { DataviewApi, DataviewPlugin } from 'obsidian-dataview';
-import SuperchargedLinksSettingTab from 'settings/SuperchargedLinksSettingTab';
-import { DEFAULT_SETTINGS, SuperchargedLinksSettings } from 'settings/SuperchargedLinksSettings';
+import { DEFAULT_SETTINGS, SuperchargedLinksSettings } from './settings';
+import SuperchargedLinksSettingTab from './settingTab';
 
 export class SuperchargedLinks extends Plugin {
   private static _instance: SuperchargedLinks;
