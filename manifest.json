@@ -1,10 +1,11 @@
 {
-	"id": "supercharged-links-obsidian",
-	"name": "Supercharged Links",
-	"version": "0.10.2",
-	"minAppVersion": "1.4.0",
-	"description": "Add properties and menu options to links and style them!",
-	"author": "mdelobelle & Emile",
-	"authorUrl": "https://github.com/mdelobelle/mdelobelle/tree/main",
-	"isDesktopOnly": false
+  "manifest_version": 3,
+  "id": "mycoshiro-supercharged-links",
+  "name": "Mycoshiro Supercharged Links",
+  "version": "0.10.0",
+  "minAppVersion": "1.4.0",
+  "description": "Add properties and menu options to links and style them!",
+  "author": "Joel Van Eenwyk",
+  "authorUrl": "https://github.com/joelvaneenwyk/",
+  "isDesktopOnly": false
 }
