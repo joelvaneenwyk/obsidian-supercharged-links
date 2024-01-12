@@ -173,12 +173,15 @@ NOTE: These demos are somewhat outdated.
 <img src="https://i.imgur.com/8VJm1TJ.gif" style="width:500px">
 
 #### Internal link simple styling
+
 <https://youtu.be/tyEdsmAQb_4>
 
 #### Multiple properties
+
 <https://youtu.be/Ofm6gIRP-7o>
 
 #### Multiple values for a property
+
 <https://youtu.be/aaSZnkEuH4w>
 
 ### Supported plugins
