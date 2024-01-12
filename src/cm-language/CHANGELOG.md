@@ -261,4 +261,3 @@ Fix a bug where changing the editor configuration wouldn't update the language p
 ### Breaking changes
 
 First numbered release.
-

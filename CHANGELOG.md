@@ -6,18 +6,15 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.3](https://github.com/HEmile/obsidian_supercharged_links/compare/0.4.2...0.4.3) (2022-01-17)
 
-
 ### Features
 
 * Support recent files plugin ([0266a6c](https://github.com/HEmile/obsidian_supercharged_links/commit/0266a6cc5e155ff5bff8057f8c605c5098f5d57e)), closes [#72](https://github.com/HEmile/obsidian_supercharged_links/issues/72)
-
 
 ### Bug Fixes
 
 * File browser does not immediately update ([9fe8642](https://github.com/HEmile/obsidian_supercharged_links/commit/9fe86424e58558f488fe9125dd5fac48d1775a5a))
 
 ### [0.4.1](https://github.com/HEmile/obsidian_supercharged_links/compare/v0.4.4...v0.4.1) (2022-01-12)
-
 
 ### Bug Fixes
 
@@ -31,14 +28,12 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 0.4.1 (2022-01-12)
 
-
 ### Features
 
 * Changed icon css class to data-link-icon to prevent confusion ([d5e290a](https://github.com/HEmile/obsidian_supercharged_links/commit/d5e290a7522d9c0df5dfdf9385705412d03632ce))
 * Much better live-preview support with CM6 extensions ([754d173](https://github.com/HEmile/obsidian_supercharged_links/commit/754d173b2e1b6bd7749a8225bce6ec08108bc3da))
 * Now also supercharges aliased links in editor and live preview ([5ea91b0](https://github.com/HEmile/obsidian_supercharged_links/commit/5ea91b0f427b6dce6de2bc1694aca226a1ba7fc0))
 * Now also supercharges the Live Preview mode ([6882200](https://github.com/HEmile/obsidian_supercharged_links/commit/68822004939553f90b9e5a73825643232f2738b8)), closes [#54](https://github.com/HEmile/obsidian_supercharged_links/issues/54)
-
 
 ### Bug Fixes
 
